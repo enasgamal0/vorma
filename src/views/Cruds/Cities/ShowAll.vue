@@ -272,7 +272,7 @@ export default {
         {
           id: 2,
           name: this.$t("STATUS.notActive"),
-          value: 0,
+          value: false,
         },
       ];
     },
@@ -405,7 +405,7 @@ export default {
           params: {
             page: this.paginations.current_page,
             name: this.filterOptions.name,
-            is_active: this.filterOptions.is_active?.value,
+            status: this.filterOptions.is_active?.value,
           },
         });
         this.loading = false;

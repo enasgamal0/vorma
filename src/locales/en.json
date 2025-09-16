@@ -1001,6 +1001,7 @@
   },
 
   "TITLES": {
+    "showAdmin": "Show Admin Data",
     "showProvider": "Show Provider Data",
     "addRecommendation": "Add a New Recommendation",
     "editRecommendation": "Edit Recommendation Data",

@@ -405,7 +405,7 @@ export default {
         {
           id: 1,
           name: this.$t("STATUS.active"),
-          value: true,
+          value: 1,
         },
         {
           id: 2,

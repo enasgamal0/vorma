@@ -215,11 +215,11 @@ export default {
           url: `admins/${this.id}`,
         });
 
-        this.data.image.path = res.data.data.Admin.image;
+        this.data.image.path = res.data.data.Admin.avatar;
         this.data.name = res.data.data.Admin.name;
         this.data.email = res.data.data.Admin.email;
         this.data.phone = res.data.data.Admin.mobile;
-        this.data.role = res.data.data.Admin.roles[0];
+        this.data.role = res.data.data.Admin.role_obj[0];
         this.data.active = res.data.data.Admin.is_active;
         this.data.numberOfVisits = res.data.data.Admin.login_count;
         this.data.lastVisit = res.data.data.Admin.last_login;
@@ -302,7 +302,7 @@ export default {
       REQUEST_DATA.append("email", this.data.email);
       REQUEST_DATA.append("mobile", this.data.phone);
       if (this.data.role) {
-        REQUEST_DATA.append("role_id", this.data.role?.id);
+        REQUEST_DATA.append("roles[]", this.data.role?.id);
       }
       if (this.data.password) {
         REQUEST_DATA.append("password", this.data.password);

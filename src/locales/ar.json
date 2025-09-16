@@ -1002,6 +1002,7 @@
   },
 
   "TITLES": {
+    "showAdmin": "عرض بيانات مدير",
     "showProvider": "عرض بيانات مقدم الخدمة",
     "addRecommendation": "إضافة توصية جديدة",
     "editRecommendation": "تعديل بيانات توصية",
