@@ -158,8 +158,8 @@ export default {
           method: "GET",
           url: `cities/${this.$route.params?.id}`,
         });
-        this.data.name_ar = res.data.data.City.name_ar;
-        this.data.name_en = res.data.data.City.name_en;
+        this.data.name_ar = res.data.data.City.trans?.name?.ar;
+        this.data.name_en = res.data.data.City.trans?.name?.en;
         this.data.active = res.data.data.City.is_active;
       } catch (error) {
         this.loading = false;

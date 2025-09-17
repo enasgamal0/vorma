@@ -2316,8 +2316,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "advertisements index",
-                subject: "advertisements",
+                action: "sliders index",
+                subject: "sliders",
               },
             },
           },
@@ -2328,8 +2328,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "advertisements create",
-                subject: "advertisements",
+                action: "sliders create",
+                subject: "sliders",
               },
             },
           },
@@ -2341,8 +2341,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "advertisements edit",
-                subject: "advertisements",
+                action: "sliders edit",
+                subject: "sliders",
               },
             },
           },
@@ -2354,8 +2354,8 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "advertisements show",
-                subject: "advertisements",
+                action: "sliders show",
+                subject: "sliders",
               },
             },
           },

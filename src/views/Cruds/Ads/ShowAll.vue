@@ -66,7 +66,7 @@
 
         <div
           class="title_route_wrapper"
-          v-if="$can('advertisements create', 'advertisements')"
+          v-if="$can('sliders create', 'sliders')"
         >
           <router-link to="/ads/create">
             {{ $t("PLACEHOLDERS.add_ads") }}
@@ -117,16 +117,16 @@
         </template>
         <!-- End:: Title -->
         <!-- Start:: Item Image -->
-        <template v-slot:[`item.image`]="{ item }">
+        <template v-slot:[`item.media`]="{ item }">
           <div class="table_image_wrapper">
-            <h6 class="text-danger" v-if="!item.image">
+            <h6 class="text-danger" v-if="!item.media">
               {{ $t("TABLES.noData") }}
             </h6>
 
             <button class="my-1" @click="showImageModal(item)" v-else>
               <video
-                v-if="item.image.endsWith('mp4')"
-                :src="item.image"
+                v-if="item.media.endsWith('mp4')"
+                :src="item.media"
                 width="80"
                 height="60"
                 class="rounded"
@@ -134,7 +134,7 @@
               <img
                 v-else
                 class="rounded"
-                :src="item.image"
+                :src="item.media"
                 width="60"
                 height="60"
               />
@@ -149,7 +149,7 @@
             class="activation"
             dir="ltr"
             style="z-index: 1"
-            v-if="$can('advertisements activate', 'advertisements')"
+            v-if="$can('sliders activate', 'sliders')"
           >
             <v-switch
               class="mt-2"
@@ -174,9 +174,9 @@
         <!-- Start:: Actions -->
         <template v-slot:[`item.actions`]="{ item }">
           <div class="actions">
-            <a-tooltip
+            <!-- <a-tooltip
               placement="bottom"
-              v-if="$can('advertisements show', 'advertisements')"
+              v-if="$can('sliders show', 'sliders')"
             >
               <template slot="title">
                 <span>{{ $t("BUTTONS.show") }}</span>
@@ -184,11 +184,11 @@
               <button class="btn_show" @click="showItem(item)">
                 <i class="fal fa-eye"></i>
               </button>
-            </a-tooltip>
+            </a-tooltip> -->
 
             <a-tooltip
               placement="bottom"
-              v-if="$can('advertisements edit', 'advertisements')"
+              v-if="$can('sliders edit', 'sliders')"
               :class="{ disable_parent: item.can_edit === true }"
             >
               <template slot="title">
@@ -205,7 +205,7 @@
 
             <a-tooltip
               placement="bottom"
-              v-if="$can('advertisements delete', 'advertisements')"
+              v-if="$can('sliders delete', 'sliders')"
               :class="{ disable_parent: item.can_delete === true }"
             >
               <template slot="title">
@@ -363,19 +363,19 @@ export default {
         },
         {
           text: this.$t("PLACEHOLDERS.image"),
-          value: "image",
+          value: "media",
           sortable: false,
           align: "center",
         },
         {
           text: this.$t("PLACEHOLDERS.start_date"),
-          value: "start_date",
+          value: "start",
           sortable: false,
           align: "center",
         },
         {
           text: this.$t("PLACEHOLDERS.end_date"),
-          value: "end_date",
+          value: "end",
           sortable: false,
           align: "center",
         },
@@ -461,14 +461,15 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "advertisements",
+          url: "sliders",
           params: {
             page: this.paginations.current_page,
-            'created_at[0]': this.filterOptions.startDate,
-            'created_at[1]': this.filterOptions.endDate,
+            from: this.filterOptions.startDate,
+            to: this.filterOptions.endDate,
           },
         });
         this.loading = false;
+        console.log("All Data ==>", res.data.data);
         this.tableRows = res.data.data.data;
         this.paginations.last_page = res.data.data.meta.last_page;
         this.paginations.items_per_page = res.data.data.meta.per_page;
@@ -490,7 +491,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `advertisements/activate/${item.id}`,
+          url: `sliders/activate/${item.id}`,
         });
         this.$message.success(this.$t("MESSAGES.changeActivation"));
       } catch (error) {
@@ -512,9 +513,9 @@ export default {
 
     showImageModal(item) {
       this.dialogImage = true;
-      this.selectedItemImage = item.image;
+      this.selectedItemImage = item.media;
       const videoExtensions = ["mp4", "mov", "avi", "wmv", "flv", "mkv", "webm", "m4v"];
-      const fileExtension = item.image.split(".").pop().toLowerCase();
+      const fileExtension = item.media.split(".").pop().toLowerCase();
       this.selectedItemType = videoExtensions.includes(fileExtension) ? "video" : "image";
     },
 
@@ -528,7 +529,7 @@ export default {
       try {
         await this.$axios({
           method: "DELETE",
-          url: `advertisements/${this.itemToDelete.id}`,
+          url: `sliders/${this.itemToDelete.id}`,
         });
         this.dialogDelete = false;
         this.tableRows = this.tableRows.filter((item) => {

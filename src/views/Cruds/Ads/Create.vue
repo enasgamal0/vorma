@@ -67,7 +67,7 @@
           <!-- End:: Name Input -->
 
           <!-- Start:: Deactivate Switch Input -->
-          <div class="input_wrapper switch_wrapper my-5">
+          <!-- <div class="input_wrapper switch_wrapper my-5">
             <v-switch
               color="green"
               :label="
@@ -78,7 +78,7 @@
               v-model="data.active"
               hide-details
             ></v-switch>
-          </div>
+          </div> -->
           <!-- End:: Deactivate Switch Input -->
 
           <!-- Start:: Submit Button Wrapper -->
@@ -125,7 +125,7 @@ export default {
         },
         nameAr: null,
         nameEn: null,
-        active: true,
+        // active: true,
         publish_start_date: null,
         publish_end_date: null,
       },
@@ -210,22 +210,22 @@ export default {
 
       REQUEST_DATA.append("name[en]", this.data.nameEn);
       if (this.data.image.file) {
-        REQUEST_DATA.append("image", this.data.image.file); // Append the file to the FormData
-        // REQUEST_DATA.append("image_type", this.file); // Append the file to the FormData
+        REQUEST_DATA.append("media", this.data.image.file); // Append the file to the FormData
+        REQUEST_DATA.append("type", "image");
       }
       if (this.data.publish_start_date){
-        REQUEST_DATA.append("start_date", this.data.publish_start_date);
+        REQUEST_DATA.append("start", this.data.publish_start_date);
       }
       if (this.data.publish_end_date){
-        REQUEST_DATA.append("end_date", this.data.publish_end_date);
+        REQUEST_DATA.append("end", this.data.publish_end_date);
       }
-      REQUEST_DATA.append("is_active", this.data.active ? 1 : 0);
+      // REQUEST_DATA.append("is_active", this.data.active ? 1 : 0);
       // Start:: Append Request Data
 
       try {
         await this.$axios({
           method: "POST",
-          url: `advertisements`,
+          url: `sliders`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;

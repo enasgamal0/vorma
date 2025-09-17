@@ -561,7 +561,7 @@
       <!-- End:: services Route -->
 
       <!-- Start:: places Route -->
-      <div class="side_routes_wrapper" v-if="
+      <!-- <div class="side_routes_wrapper" v-if="
           $can('countries index', 'countries') || $can('areas index', 'areas') || $can('cities index', 'cities')
           ">
         <a-menu
@@ -600,7 +600,7 @@
             </template>
           </a-sub-menu>
         </a-menu>
-      </div>
+      </div> -->
       <!-- Start:: places Route -->
       <!-- <div
         class="home_route"
@@ -624,25 +624,25 @@
       <!-- End:: districts Route -->
 
       <!-- Start:: cities Route -->
-      <!-- <div
+      <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('countries index', 'countries')"
+        v-if="$can('cities index', 'cities')"
       >
-        <router-link to="/countries/all">
+        <router-link to="/cities/all">
           <span class="route_icon">
             <img
-              src="@/assets/media/icons/ui_icons/city.svg"
+              src="@/assets/media/icons/ui_icons/addresses.svg"
               alt="icon"
               width="40"
               height="40"
             />
           </span>
           <span class="route_text">
-            {{ $t("PLACEHOLDERS.countries") }}
+            {{ $t("PLACEHOLDERS.cities") }}
           </span>
         </router-link>
-      </div> -->
+      </div>
       <!-- End:: cities Route -->
       <div
         class="home_route"
@@ -841,7 +841,7 @@
       <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('advertisements index', 'advertisements')"
+        v-if="$can('sliders index', 'sliders')"
       >
         <router-link to="/Ads/all">
           <span class="route_icon">
@@ -1058,7 +1058,7 @@
       <!-- End:: FAQ Route -->
 
       <!-- Start:: app settings Route -->
-      <div
+      <!-- <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
         v-if="$can('settings index', 'settings')"
@@ -1076,10 +1076,10 @@
             {{ $t("SIDENAV.settings.general_app") }}
           </span>
         </router-link>
-      </div>
+      </div> -->
       <!-- End:: app settings Route -->
       <!-- Start:: Side Nav Routes -->
-      <div class="side_routes_wrapper" v-if="$can('settings index', 'settings')">
+      <!-- <div class="side_routes_wrapper" v-if="$can('settings index', 'settings')">
         <a-menu
           style="width: 100%"
           mode="vertical"
@@ -1116,7 +1116,7 @@
             </template>
           </a-sub-menu>
         </a-menu>
-      </div>
+      </div> -->
       <!-- End:: Side Nav Routes -->
 
       <!-- Start:: contacts Route -->
