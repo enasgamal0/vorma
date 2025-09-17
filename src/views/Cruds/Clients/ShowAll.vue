@@ -110,10 +110,24 @@
         </template>
         <!-- Start:: No Data State -->
 
-        <template v-slot:[`item.id`]="{ item, index }">
+        <template v-slot:[`item.user.gender`]="{ item }">
+          <h6 v-if="!item.user?.gender">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.gender }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.city`]="{ item }">
+          <h6 v-if="!item.user?.city">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.city?.name || item.user?.city }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.id`]="{ item, index }">
           <div class="table_image_wrapper">
-            <h6 class="text-danger" v-if="!item.id">
-              {{ $t("TABLES.noData") }}
+            <h6 v-if="!item.user?.id">
+              -
             </h6>
             <p v-else>
               {{
@@ -124,9 +138,39 @@
             </p>
           </div>
         </template>
+
+        <!-- Start:: Item Image -->
+        <template v-slot:[`item.user.image`]="{ item }">
+          <div class="table_image_wrapper">
+            <h6 class="text-danger" v-if="!item.user?.image">
+              {{ $t("TABLES.noData") }}
+            </h6>
+
+            <button class="my-1" @click="showImageModal(item)" v-else>
+              <video
+                v-if="item.user?.image.endsWith('mp4')"
+                :src="item.user?.image"
+                width="80"
+                height="60"
+                class="rounded"
+              ></video>
+              <img
+                v-else
+                class="rounded"
+                :src="item.user?.image"
+                width="60"
+                height="60"
+              />
+            </button>
+          </div>
+        </template>
+        <!-- End:: Item Image -->
+
+        Gender
+
         <!-- Start:: Activation Status -->
-        <template v-slot:[`item.is_active`]="{ item }">
-          <span class="text-success text-h5" v-if="item?.is_active">
+        <template v-slot:[`item.user.is_active`]="{ item }">
+          <span class="text-success text-h5" v-if="item?.user?.is_active">
             <i class="far fa-check"></i>
           </span>
           <span class="text-danger text-h5" v-else>
@@ -147,7 +191,7 @@
                 <i class="fal fa-eye"></i>
               </button>
             </a-tooltip>
-            <a-tooltip placement="bottom" v-if="!item?.is_active">
+            <a-tooltip placement="bottom" v-if="!item?.user?.is_active">
               <template slot="title">
                 <span>{{ $t("BUTTONS.activate") }}</span>
               </template>
@@ -158,7 +202,7 @@
                 <i class="fad fa-check-circle"></i>
               </button>
             </a-tooltip>
-            <a-tooltip placement="bottom" v-if="item?.is_active">
+            <a-tooltip placement="bottom" v-if="item?.user?.is_active">
               <template slot="title">
                 <span>{{ $t("BUTTONS.deactivate") }}</span>
               </template>
@@ -171,7 +215,7 @@
             </a-tooltip>
             <a-tooltip
               placement="bottom"
-              v-if="$can('users delete', 'users') && item?.id !== 1"
+              v-if="$can('users delete', 'users') && item?.user?.id !== 1"
             >
               <template slot="title">
                 <span>{{ $t("BUTTONS.delete") }}</span>
@@ -186,6 +230,15 @@
 
         <!-- ======================== Start:: Dialogs ======================== -->
         <template v-slot:top>
+          <!-- Start:: Image Modal -->
+          <image-modal
+            v-if="dialogImage"
+            :type="selectedItemType"
+            :modalIsOpen="dialogImage"
+            :modalImage="selectedItemImage"
+            @toggleModal="dialogImage = !dialogImage"
+          />
+          <!-- End:: Image Modal -->
           <!-- Start:: Deactivate Modal -->
           <v-dialog v-model="dialogDeactivate">
             <v-card>
@@ -195,7 +248,7 @@
               >
                 {{
                   $t("TITLES.DeactivateConfirmingMessage", {
-                    name: itemToChangeActivationStatus.name,
+                    name: itemToChangeActivationStatus?.user?.name,
                   })
                 }}
               </v-card-title>
@@ -238,7 +291,7 @@
               <v-card-title class="text-h5 justify-center" v-if="itemToDelete">
                 {{
                   $t("TITLES.DeleteConfirmingMessage", {
-                    name: itemToDelete.name,
+                    name: itemToDelete?.user?.name,
                   })
                 }}
               </v-card-title>
@@ -411,7 +464,7 @@ export default {
         {
           id: 2,
           name: this.$t("STATUS.notActive"),
-          value: 0,
+          value: false,
         },
       ];
     },
@@ -425,6 +478,12 @@ export default {
         appRevenu: null,
         totalVat: null,
       },
+
+      // Start:: Image Modal
+      dialogImage: false,
+      selectedItemImage: null,
+      selectedItemType: "image",
+      // End:: Image Modal
 
       // Start:: Loading Data
       loading: false,
@@ -448,31 +507,55 @@ export default {
       tableHeaders: [
         {
           text: this.$t("TABLES.Admins.serialNumber"),
-          value: "id",
+          value: "user.id",
           align: "center",
           sortable: false,
         },
         {
+          text: this.$t("PLACEHOLDERS.image"),
+          value: "user.image",
+          sortable: false,
+          align: "center",
+        },
+        {
           text: this.$t("PLACEHOLDERS.name"),
-          value: "name",
+          value: "user.name",
           sortable: false,
           align: "center",
         },
         {
           text: this.$t("PLACEHOLDERS.phone"),
-          value: "mobile",
+          value: "user.mobile",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.email"),
+          value: "user.email",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.gender"),
+          value: "user.gender",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.city"),
+          value: "user.city",
           sortable: false,
           align: "center",
         },
         {
           text: this.$t("PLACEHOLDERS.joiningDate"),
-          value: "created_at",
+          value: "user.created_at",
           sortable: false,
           align: "center",
         },
         {
           text: this.$t("PLACEHOLDERS.status"),
-          value: "is_active",
+          value: "user.is_active",
           sortable: false,
           align: "center",
         },
@@ -573,12 +656,12 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "users",
+          url: "users?type=client",
           params: {
             // page: this.paginations.current_page,
             name: this.filterOptions.name,
             mobile: this.filterOptions.mobile,
-            is_active: this.filterOptions.status?.value,
+            status: this.filterOptions.status?.value,
           },
         });
         this.loading = false;
@@ -614,7 +697,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `users/activate/${targetItem?.id}`,
+          url: `users/activate/${targetItem?.user?.id}`,
           data: REQUEST_DATA,
         });
         this.$message.success(this.$t("MESSAGES.changeActivation"));
@@ -635,7 +718,7 @@ export default {
 
     async downloadExcel() {
       window.open(
-        "https://backend.vorma.moltaqadev.com/dashboard-api/v1/export-users",
+        "https://backend.vorma.moltaqadev.com/export-users?type=client",
         "_blank"
       );
     },
@@ -644,7 +727,7 @@ export default {
     // ==================== Start:: Crud ====================
     // ===== Start:: Show
     showItem(item) {
-      this.$router.push({ path: `/clients/show/${item.id}` });
+      this.$router.push({ path: `/clients/show/${item?.user?.id}` });
     },
     // ===== End:: Show
 
@@ -657,11 +740,11 @@ export default {
       try {
         await this.$axios({
           method: "DELETE",
-          url: `admins/${this.itemToDelete?.id}`,
+          url: `users/${this.itemToDelete?.user?.id}`,
         });
         this.dialogDelete = false;
         this.tableRows = this.tableRows.filter((item) => {
-          return item.id != this.itemToDelete?.id;
+          return item.id != this.itemToDelete?.user?.id;
         });
         this.setTableRows();
         this.$message.success(this.$t("MESSAGES.deletedSuccessfully"));
@@ -671,6 +754,14 @@ export default {
       }
     },
     // ===== End:: Delete
+
+    showImageModal(item) {
+      this.dialogImage = true;
+      this.selectedItemImage = item.user?.image;
+      const videoExtensions = ["mp4", "mov", "avi", "wmv", "flv", "mkv", "webm", "m4v"];
+      const fileExtension = item.user?.image?.split(".").pop().toLowerCase();
+      this.selectedItemType = videoExtensions?.includes(fileExtension) ? "video" : "image";
+    },
 
     // ==================== End:: Crud ====================
   },

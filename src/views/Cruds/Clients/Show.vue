@@ -19,7 +19,7 @@
           <v-chip color="amber darken-2" text-color="white">
             {{ $t("TITLES.numberOfVisits", { number: data.numberOfVisits }) }}
           </v-chip>
-          <v-chip color="amber darken-2 mx-2" text-color="white">
+          <v-chip color="amber darken-2 mx-2" text-color="white" v-if="data.lastVisit">
             {{ $t("TITLES.lastVisit", { date: data.lastVisit }) }}
           </v-chip>
         </div>
@@ -39,10 +39,35 @@
             disabled
           />
           <base-input
+            v-if="data.mobile"
             col="6"
             type="text"
             :placeholder="$t('PLACEHOLDERS.phone')"
             v-model.trim="data.mobile"
+            disabled
+          />
+          <base-input
+            v-if="data.email"
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.email')"
+            v-model.trim="data.email"
+            disabled
+          />
+          <base-input
+            v-if="data.gender"
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.gender')"
+            v-model.trim="data.gender"
+            disabled
+          />
+          <base-input
+            v-if="data.city"
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.city')"
+            v-model.trim="data.city"
             disabled
           />
           <base-input
@@ -83,6 +108,9 @@ export default {
         },
         mobile: null,
         client_name: null,
+        email: null,
+        gender: null,
+        city: null,
         is_active: true,
         created_at: null,
       },
@@ -98,12 +126,15 @@ export default {
           method: "GET",
           url: `users/${this.$route.params?.id}`,
         });
-        this.data.client_name = res.data.data.User.name;
-        this.data.mobile = res.data.data.User.mobile;
-        this.data.created_at = res.data.data.User.created_at;
-        this.data.is_active = res.data.data.User.is_active;
-        this.data.numberOfVisits = res.data.data.User.login_count;
-        this.data.lastVisit = res.data.data.User.last_login;
+        this.data.client_name = res.data.data.User?.user?.name;
+        this.data.mobile = res.data.data.User?.user?.mobile;
+        this.data.email = res.data.data.User?.user?.email;
+        this.data.gender = res.data.data.User?.user?.gender;
+        this.data.city = res.data.data.User?.user?.city?.name || res.data.data.User?.user?.city;
+        this.data.created_at = res.data.data.User?.user?.created_at;
+        this.data.is_active = res.data.data.User?.user?.is_active;
+        this.data.numberOfVisits = res.data.data.User?.user?.login_numbers;
+        this.data.lastVisit = res.data.data.User?.user?.last_login_date;
       } catch (error) {
         this.loading = false;
         console.log(error?.response?.data?.message);
