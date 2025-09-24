@@ -182,6 +182,14 @@ export default {
         this.isWaitingRequest = false;
         this.$message.error(this.$t("VALIDATION.nameEn"));
         return;
+      } else if (!this.data.publish_start_date) {
+        this.isWaitingRequest = false;
+        this.$message.error(this.$t("VALIDATION.publish_start_date"));
+        return;
+      } else if (!this.data.publish_end_date) {
+        this.isWaitingRequest = false;
+        this.$message.error(this.$t("VALIDATION.publish_end_date"));
+        return;
       } else {
         this.submitForm();
         return;
@@ -197,12 +205,12 @@ export default {
 
       REQUEST_DATA.append("name[en]", this.data.nameEn);
       if (this.data.image.file) {
-        REQUEST_DATA.append("image", this.data.image.file); // Append the file to the FormData
+        REQUEST_DATA.append("media", this.data.image.file); // Append the file to the FormData
         // REQUEST_DATA.append("image_type", this.file); // Append the file to the FormData
       }
-      REQUEST_DATA.append("start_date", this.data.publish_start_date || null);
-      REQUEST_DATA.append("end_date", this.data.publish_end_date || null);
-      REQUEST_DATA.append("is_active", this.data.active ? 1 : 0);
+      REQUEST_DATA.append("type", "image");
+      REQUEST_DATA.append("start", this.data.publish_start_date || null);
+      REQUEST_DATA.append("end", this.data.publish_end_date || null);
       // REQUEST_DATA.append("__method", "PUT");
       REQUEST_DATA.append("_method", "PUT");
       // Start:: Append Request Data
@@ -210,7 +218,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `advertisements/${this.$route.params.id}`,
+          url: `sliders/${this.$route.params.id}`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;
@@ -228,14 +236,15 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `advertisements/${this.$route.params.id}`,
+          url: `sliders/${this.$route.params.id}`,
         });
-        this.data.image.path = res.data.data.Advertisement.image;
-        this.data.nameAr = res.data.data.Advertisement.name_ar;
-        this.data.nameEn = res.data.data.Advertisement.name_en;
-        this.data.publish_start_date = res.data.data.Advertisement.start_date;
-        this.data.publish_end_date = res.data.data.Advertisement.end_date;
-        this.data.active = res.data.data.Advertisement.is_active;
+        console.log(res.data.data);
+        this.data.image.path = res.data.data.Slider?.media;
+        this.data.nameAr = res.data.data.Slider.trans?.name?.ar;
+        this.data.nameEn = res.data.data.Slider.trans?.name?.en;
+        this.data.publish_start_date = res.data.data.Slider.start;
+        this.data.publish_end_date = res.data.data.Slider.end;
+        this.data.active = res.data.data.Slider.is_active;
         // console.log(res.data.body.add_space)
       } catch (error) {
         this.loading = false;
