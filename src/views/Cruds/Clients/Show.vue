@@ -39,6 +39,13 @@
             disabled
           />
           <base-input
+            col="6"
+            type="text"
+            :placeholder="$t('PLACEHOLDERS.user_name')"
+            v-model.trim="data.user_name"
+            disabled
+          />
+          <base-input
             v-if="data.mobile"
             col="6"
             type="text"
@@ -108,6 +115,7 @@ export default {
         },
         mobile: null,
         client_name: null,
+        user_name: null,
         email: null,
         gender: null,
         city: null,
@@ -127,6 +135,7 @@ export default {
           url: `users/${this.$route.params?.id}`,
         });
         this.data.client_name = res.data.data.User?.user?.name;
+        this.data.user_name = res.data.data.User?.user?.username;
         this.data.mobile = res.data.data.User?.user?.mobile;
         this.data.email = res.data.data.User?.user?.email;
         this.data.gender = res.data.data.User?.user?.gender;

@@ -124,6 +124,34 @@
           <h6 v-else>{{ item.user?.city?.name || item.user?.city }}</h6>
         </template>
 
+        <template v-slot:[`item.user.name`]="{ item }">
+          <h6 v-if="!item.user?.name">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.name }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.username`]="{ item }">
+          <h6 v-if="!item.user?.username">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.username }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.mobile`]="{ item }">
+          <h6 v-if="!item.user?.mobile">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.mobile }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.email`]="{ item }">
+          <h6 v-if="!item.user?.email">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.email }}</h6>
+        </template>
+
         <template v-slot:[`item.user.id`]="{ item, index }">
           <div class="table_image_wrapper">
             <h6 v-if="!item.user?.id">
@@ -377,14 +405,14 @@
     <!-- End:: Main Section -->
 
     <!-- Start:: Pagination -->
-    <!-- <template>
+    <template>
       <div class="pagination_container text-center mt-3 mb-0">
         <v-pagination class="py-0" square v-model="paginations.current_page" :length="paginations.last_page"
           :total-visible="6" @input="updateRouterQueryParam($event)" :prev-icon="getAppLocale == 'ar' ? 'fal fa-angle-right' : 'fal fa-angle-left'
             " :next-icon="getAppLocale == 'ar' ? 'fal fa-angle-left' : 'fal fa-angle-right'
               " />
       </div>
-    </template> -->
+    </template>
     <!-- End:: Pagination -->
 
     <!-- Start:: Generate PDF Template Content -->
@@ -524,6 +552,12 @@ export default {
           align: "center",
         },
         {
+          text: this.$t("PLACEHOLDERS.user_name"),
+          value: "user.username",
+          sortable: false,
+          align: "center",
+        },
+        {
           text: this.$t("PLACEHOLDERS.phone"),
           value: "user.mobile",
           sortable: false,
@@ -658,7 +692,7 @@ export default {
           method: "GET",
           url: "users?type=client",
           params: {
-            // page: this.paginations.current_page,
+            page: this.paginations.current_page,
             name: this.filterOptions.name,
             mobile: this.filterOptions.mobile,
             status: this.filterOptions.status?.value,
