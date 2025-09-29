@@ -362,7 +362,7 @@ export default {
           align: "center",
         },
         {
-          text: this.$t("PLACEHOLDERS.image"),
+          text: this.$t("PLACEHOLDERS.contents"),
           value: "media",
           sortable: false,
           align: "center",

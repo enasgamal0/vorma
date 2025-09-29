@@ -19,7 +19,7 @@
           <base-image-upload-input
             col="12"
             identifier="image"
-            :placeholder="$t('PLACEHOLDERS.image')"
+            :placeholder="$t('PLACEHOLDERS.contents')"
             @selectImage="selectImage"
             :acceptVideo="true"
             required
@@ -210,7 +210,12 @@ export default {
 
       REQUEST_DATA.append("name[en]", this.data.nameEn);
       if (this.data.image.file) {
-        REQUEST_DATA.append("media", this.data.image.file); // Append the file to the FormData
+        REQUEST_DATA.append("media", this.data.image.file);
+      }
+      // Type video or image
+      if (this.data.image?.file?.name?.endsWith(".mp4") || this.data.image?.file?.name?.endsWith(".mov") || this.data.image?.file?.name?.endsWith(".wmn") || this.data.image?.file?.name?.endsWith(".avi")) {
+        REQUEST_DATA.append("type", "video");
+      } else {
         REQUEST_DATA.append("type", "image");
       }
       if (this.data.publish_start_date){

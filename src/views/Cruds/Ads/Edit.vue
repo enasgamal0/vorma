@@ -19,7 +19,7 @@
             col="12"
             :identifier="'image'"
             :preSelectedImage="data.image.path"
-            :placeholder="$t('PLACEHOLDERS.image')"
+            :placeholder="$t('PLACEHOLDERS.contents')"
             @selectImage="selectImage"
             required
             :acceptVideo="true"
@@ -199,6 +199,8 @@ export default {
 
     // Start:: Submit Form
     async submitForm() {
+      console.log(this.data.image)
+
       const REQUEST_DATA = new FormData();
       // Start:: Append Request Data
       REQUEST_DATA.append("name[ar]", this.data.nameAr);
@@ -208,7 +210,12 @@ export default {
         REQUEST_DATA.append("media", this.data.image.file); // Append the file to the FormData
         // REQUEST_DATA.append("image_type", this.file); // Append the file to the FormData
       }
-      REQUEST_DATA.append("type", "image");
+      // Type video or image
+      if (this.data.image?.file?.name?.endsWith(".mp4") || this.data.image?.file?.name?.endsWith(".mov") || this.data.image?.file?.name?.endsWith(".wmn") || this.data.image?.file?.name?.endsWith(".avi")) {
+        REQUEST_DATA.append("type", "video");
+      } else {
+        REQUEST_DATA.append("type", "image");
+      }
       REQUEST_DATA.append("start", this.data.publish_start_date || null);
       REQUEST_DATA.append("end", this.data.publish_end_date || null);
       // REQUEST_DATA.append("__method", "PUT");
