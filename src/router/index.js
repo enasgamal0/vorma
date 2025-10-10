@@ -217,6 +217,14 @@ import ShowServices from "../views/Cruds/Services/Show.vue";
 import EditServices from "../views/Cruds/Services/Edit.vue";
 // ============== End:: Services Routes
 
+// ============== Start:: Places Routes
+import PlacesHome from "../views/Cruds/Places/Home.vue";
+import AllPlaces from "../views/Cruds/Places/ShowAll.vue";
+import CreatePlace from "../views/Cruds/Places/Create.vue";
+import ShowPlace from "../views/Cruds/Places/Show.vue";
+import EditPlace from "../views/Cruds/Places/Edit.vue";
+// ============== End:: Places Routes
+
 // ============== Start:: Workplaces Routes
 import WorkplacesHome from "../views/Cruds/Workplaces/Home.vue";
 import AllWorkplaces from "../views/Cruds/Workplaces/ShowAll.vue";
@@ -1555,6 +1563,69 @@ const routes = [
       ],
     },
       // End:: services Config
+
+      // Start:: services  Config
+      {
+        path: "/places",
+        name: "places",
+        component: PlacesHome,
+        meta: {
+          middleware: [auth],
+        },
+        children: [
+          {
+            path: "all",
+            name: "Allplaces",
+            component: AllPlaces,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "places index",
+                subject: "places",
+              },
+            },
+          },
+          {
+            path: "create",
+            name: "Createplaces",
+            component: CreatePlace,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "places create",
+                subject: "places",
+              },
+            },
+          },
+          {
+            path: "edit/:id",
+            name: "Editplaces",
+            component: EditPlace,
+            props: true,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "places edit",
+                subject: "places",
+              },
+            },
+          },
+          {
+            path: "show/:id",
+            name: "Showplaces",
+            component: ShowPlace,
+            props: true,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "places show",
+                subject: "places",
+              },
+            },
+          },
+        ],
+      },
+        // End:: places Config
 
       // Start:: Sectors Config
       {

@@ -643,23 +643,23 @@
           </span>
         </router-link>
       </div>
-      <!-- End:: cities Route -->
+      <!-- End:: places Route -->
       <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('hobbies index', 'hobbies')"
+        v-if="$can('places index', 'places')"
       >
-        <router-link to="/hobbies/all">
+        <router-link to="/places/all">
           <span class="route_icon">
             <img
-              src="@/assets/media/icons/ui_icons/hobby.png"
+              src="@/assets/media/icons/ui_icons/office.svg"
               alt="icon"
               width="40"
               height="40"
             />
           </span>
           <span class="route_text">
-            {{ $t("PLACEHOLDERS.hobbies_management") }}
+            {{ $t("PLACEHOLDERS.places_management") }}
           </span>
         </router-link>
       </div>

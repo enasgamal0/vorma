@@ -1002,6 +1002,8 @@
   },
 
   "TITLES": {
+    "addPlace": "إضافة مكان جديد",
+    "editPlace": "تعديل مكان",
     "showAdmin": "عرض بيانات مدير",
     "showProvider": "عرض بيانات مقدم الخدمة",
     "addRecommendation": "إضافة توصية جديدة",
@@ -1266,6 +1268,34 @@
   },
 
   "PLACEHOLDERS": {
+    "click_to_add_points": "اضغط على الخريطة لإضافة نقاط تحديد الموقع",
+    "selected_points": "النقاط المختارة",
+    "place_name_ar": "اسم المكان بالعربية",
+    "place_name_en": "اسم المكان بالإنجليزية",
+    "sport": "رياضي",
+    "spart1": "الرياضة",
+    "entertainment": "ترفيهي",
+    "description_ar": "وصف المكان بالعربية",
+    "description_en": "وصف المكان بالإنجليزية",
+    "place_images": "صور المكان",
+    "max_5_images": "حد أقصى 5 صور",
+    "activities": "النشاطات",
+    "available_sports": "الرياضات المتوفرة",
+    "sport_name_ar": "اسم الرياضة بالعربية",
+    "sport_name_en": "اسم الرياضة بالإنجليزية",
+    "available_services": "الخدمات المتوفرة",
+    "service_name_ar": "اسم الخدمة بالعربية",
+    "service_name_en": "اسم الخدمة بالإنجليزية",
+    "working_hours": "ساعات العمل",
+    "notes_ar": "ملاحظات وتنبيهات بالعربية (اختياري)",
+    "notes_en": "ملاحظات وتنبيهات بالإنجليزية (اختياري)",
+    "location_points": "نقاط الموقع",
+    "point": "نقطة",
+    "places_management": "إدارة الأماكن الرياضية الترفيهية",
+    "type": "نوع المكان",
+    "add_place": "إضافة مكان جديد",
+    "edit_place": "تعديل مكان",
+    "show_place": "عرض مكان",
     "prev_imgs": "صور الأعمال السابقة",
     "commercial_register_img": "صورة السجل التجاري",
     "sub_categories": "الأقسام الفرعية",
@@ -2351,6 +2381,12 @@
   },
 
   "VALIDATION": {
+    "images_required": "يجب إضافة صور المكان",
+    "max_5_images": "الحد الأقصى 5 صور فقط",
+    "activities_required": "يجب اختيار نشاط واحد على الأقل",
+    "selectedFileMustBeImage": "يجب أن يكون الملف المحدد صورة (jpg, png, jpeg)",
+    "required_field": "هذا الحقل مطلوب",
+    "invalid_time": "الوقت غير صحيح",
     "main_section": "حقل القسم الرئيسي مطلوب",
     "sort": "حقل الترتيب مطلوب",
     "publish_start_date": "حقل تاريخ بداية النشر مطلوب",
@@ -2392,7 +2428,6 @@
     "address": "حقل العنوان لا يمكن أن يكون فارغًا",
     "area": "يجب اختيار منطقة",
     "userImage": "يجب اختيار صورة شخصية",
-    "selectedFileMustBeImage": "يجب أن يكون الحقل من نوع : jpg, png, jpeg, jfif",
     "selectedFileMustBeImageOrVideo": "يجب أن يكون الحقل من نوع : jpg, png, jpeg, jfif, mp4, mov, webm",
     "deactivateReason": "حقل سبب إلغاء التفعيل لا يمكن أن يكون فارغًا",
     "serviceTypeImage": "يجب اختيار صورة نوع الخدمة",
@@ -2509,5 +2544,20 @@
     "reject_join_request": " تم رفض  طلب الانضمام",
     "accept_join_request": " تم قبول  طلب الانضمام",
     "reject_request": "تم رفض الطلب بنجاح"
+  },
+
+  "ACTIVITIES": {
+    "walking_running": "مشي / جري",
+    "cycling": "ركوب دراجة",
+    "horse_riding": "ركوب خيل"
+  },
+  "DAYS": {
+    "sunday": "الأحد",
+    "monday": "الإثنين",
+    "tuesday": "الثلاثاء",
+    "wednesday": "الأربعاء",
+    "thursday": "الخميس",
+    "friday": "الجمعة",
+    "saturday": "السبت"
   }
 }

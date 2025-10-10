@@ -1001,6 +1001,8 @@
   },
 
   "TITLES": {
+    "addPlace": "Add a New Place",
+    "editPlace": "Edit Place Data",
     "showAdmin": "Show Admin Data",
     "showProvider": "Show Provider Data",
     "addRecommendation": "Add a New Recommendation",
@@ -1265,6 +1267,34 @@
   },
 
   "PLACEHOLDERS": {
+    "click_to_add_points": "Click on Map to add points to set location",
+    "selected_points": "Selected points",
+    "place_name_ar": "Place Name in Arabic",
+    "place_name_en": "Place Name in English",
+    "sport": "Sport",
+    "spart1": "Sport",
+    "entertainment": "Entertainment",
+    "description_ar": "Place Description in Arabic",
+    "description_en": "Place Description in English",
+    "place_images": "Place Images",
+    "max_5_images": "Maximum 5 images",
+    "activities": "Activities",
+    "available_sports": "Available Sports",
+    "sport_name_ar": "Sport Name in Arabic",
+    "sport_name_en": "Sport Name in English",
+    "available_services": "Available Services",
+    "service_name_ar": "Service Name in Arabic",
+    "service_name_en": "Service Name in English",
+    "working_hours": "Working Hours",
+    "notes_ar": "Notes and Alerts in Arabic (Optional)",
+    "notes_en": "Notes and Alerts in English (Optional)",
+    "location_points": "Location Points",
+    "point": "Point",
+    "places_management": "Sports and Entertainment Places Management",
+    "type": "Place Type",
+    "add_place": "Add a New Place",
+    "edit_place": "Edit Place Data",
+    "show_place": "Show Place Data",
     "prev_imgs": "Previous Work Images",
     "commercial_register_img": "Commercial Register Image",
     "sub_categories": "Subcategories",
@@ -2347,6 +2377,11 @@
   },
 
   "VALIDATION": {
+    "images_required": "Place images are required",
+    "max_5_images": "Maximum 5 images only",
+    "activities_required": "At least one activity must be selected",
+    "required_field": "This field is required",
+    "invalid_time": "Invalid time",
     "main_section": "Main Category Field is Required",
     "sort": "Sort Field is Required",
     "publish_start_date": "Publish Start Date Field is Required",
@@ -2504,5 +2539,20 @@
     "reject_join_request": "Join Request Has Been Rejected",
     "accept_join_request": "Join Request Has Been Accepted",
     "reject_request": "The request has been successfully rejected."
+  },
+
+  "ACTIVITIES": {
+    "walking_running": "Walking / Running",
+    "cycling": "Cycling",
+    "horse_riding": "Horse Riding"
+  },
+  "DAYS": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
   }
 }
