@@ -132,7 +132,7 @@
               <label
                 style="font-size: 16px; color: #814686"
                 class="font-weight-bold mb-4"
-                >{{ $t("PLACEHOLDERS.spart1") }} #{{ index + 1 }}</label
+                >{{ $t("PLACEHOLDERS.sport1") }} #{{ index + 1 }}</label
               >
               <div class="row">
                 <base-input

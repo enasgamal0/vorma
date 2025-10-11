@@ -54,12 +54,12 @@
           <!-- End:: Tax Percentage Input -->
 
           <!-- Start:: Tax Percentage Input -->
-          <base-input
+          <!-- <base-input
             col="6"
             type="text"
             :placeholder="$t('PLACEHOLDERS.email')"
             v-model.trim="data.email"
-          />
+          /> -->
           <!-- End:: Tax Percentage Input -->
 
           <!-- Start:: Tax Percentage Input -->
@@ -100,7 +100,7 @@
 
           <!-- Start:: Tax Percentage Input -->
           <base-input
-            col="12"
+            col="6"
             type="text"
             :placeholder="$t('PLACEHOLDERS.twitter_link')"
             v-model.trim="data.twitter_link"
@@ -162,7 +162,7 @@ export default {
         facebook_link: null,
         android: null,
         ios: null,
-        email: null,
+        // email: null,
       },
       // End:: Data Collection To Send
 
@@ -188,24 +188,24 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `settings-general?key=social_contact`,
+          url: `settings?key=app-contacts`,
         });
         // Start:: Set Data
 
         // Transform the API response
-        this.phones = res.data.data.data[0]?.value?.mobile?.map((phone) => ({
+        this.phones = res.data.data.data[0]?.value?.phones?.map((phone) => ({
           phone: phone,
         })) || [];
         if (this.phones.length === 0) {
           this.phones.push({ phone: "" });
         }
-        this.data.WhatsApp_contact = res.data.data.data[0]?.value?.whatsapp;
+        this.data.WhatsApp_contact = res.data.data.data[0]?.value?.watsApp;
         this.data.twitter_link = res.data.data.data[0]?.value?.twitter;
         this.data.facebook_link = res.data.data.data[0]?.value?.facebook;
         this.data.instagram_link = res.data.data.data[0]?.value?.instagram;
-        this.data.tiktok_link = res.data.data.data[0]?.value?.tikTok;
+        this.data.tiktok_link = res.data.data.data[0]?.value?.tiktok;
         this.data.snapchat_link = res.data.data.data[0]?.value?.snapchat;
-        this.data.email = res.data.data.data[0]?.value?.email;
+        // this.data.email = res.data.data.data[0]?.value?.email;
         this.data.android = res.data.data.data[0]?.value?.play_store;
         this.data.ios = res.data.data.data[0]?.value?.app_store;
 
@@ -222,17 +222,17 @@ export default {
 
       const REQUEST_DATA = new FormData();
       // Start:: Append Request Data
-      REQUEST_DATA.append("key", "social_contact");
+      REQUEST_DATA.append("key", "app-contacts");
       this.phones.forEach((element) => {
         if (element.phone) {
-          REQUEST_DATA.append(`value[mobile][]`, element.phone);
+          REQUEST_DATA.append(`value[phones][]`, element.phone);
         }
       });
       if (this.data.WhatsApp_contact) {
-        REQUEST_DATA.append("value[whatsapp]", this.data.WhatsApp_contact);
+        REQUEST_DATA.append("value[watsApp]", this.data.WhatsApp_contact);
       }
       if (this.data.tiktok_link) {
-        REQUEST_DATA.append("value[tikTok]", this.data.tiktok_link);
+        REQUEST_DATA.append("value[tiktok]", this.data.tiktok_link);
       }
       if (this.data.facebook_link) {
         REQUEST_DATA.append("value[facebook]", this.data.facebook_link);
@@ -252,9 +252,9 @@ export default {
       if (this.data.ios) {
         REQUEST_DATA.append("value[app_store]", this.data.ios);
       }
-      if (this.data.email) {
-        REQUEST_DATA.append("value[email]", this.data.email);
-      }
+      // if (this.data.email) {
+      //   REQUEST_DATA.append("value[email]", this.data.email);
+      // }
 
       REQUEST_DATA.append("value[url]", "https://www.example.com");
 
@@ -263,7 +263,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `settings?key=social_contact`,
+          url: `settings?key=app-contacts`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;

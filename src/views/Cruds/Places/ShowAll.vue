@@ -3,7 +3,7 @@
     <!-- Start:: Main Section -->
     <main>
       <!--  =========== Start:: Filter Form =========== -->
-      <!-- <div
+      <div
         class="filter_content_wrapper"
         :class="{ active: filterFormIsActive }"
       >
@@ -21,17 +21,24 @@
           <form @submit.prevent="submitFilterForm">
             <div class="row justify-content-center align-items-center w-100">
               <base-input
-                col="5"
+                col="4"
                 type="text"
                 :placeholder="$t('PLACEHOLDERS.name')"
                 v-model.trim="filterOptions.name"
               />
 
               <base-select-input
-                col="5"
-                :optionsList="activeStatuses"
-                :placeholder="$t('PLACEHOLDERS.status')"
-                v-model="filterOptions.is_active"
+                col="4"
+                :optionsList="cities"
+                :placeholder="$t('PLACEHOLDERS.city')"
+                v-model="filterOptions.city_id"
+              />
+
+              <base-select-input
+                col="4"
+                :optionsList="placeTypes"
+                :placeholder="$t('PLACEHOLDERS.type')"
+                v-model="filterOptions.type"
               />
             </div>
 
@@ -50,7 +57,7 @@
             </div>
           </form>
         </div>
-      </div> -->
+      </div>
 
       <!--  =========== Start:: Table Title =========== -->
       <div class="table_title_wrapper">
@@ -65,10 +72,7 @@
           </button>
         </div>
 
-        <div
-          class="title_route_wrapper"
-          v-if="$can('places create', 'places')"
-        >
+        <div class="title_route_wrapper" v-if="$can('places create', 'places')">
           <router-link to="/places/create">
             {{ $t("PLACEHOLDERS.add_place") }}
           </router-link>
@@ -89,7 +93,11 @@
         hide-default-footer
       >
         <template v-slot:[`item.id`]="{ index }">
-          {{ (paginations.current_page - 1) * paginations.items_per_page + index + 1 }}
+          {{
+            (paginations.current_page - 1) * paginations.items_per_page +
+            index +
+            1
+          }}
         </template>
         <!-- Start:: No Data State -->
         <template v-slot:no-data>
@@ -120,10 +128,7 @@
         <!-- Start:: Actions -->
         <template v-slot:[`item.actions`]="{ item }">
           <div class="actions">
-            <a-tooltip
-              placement="bottom"
-              v-if="$can('places show', 'places')"
-            >
+            <a-tooltip placement="bottom" v-if="$can('places show', 'places')">
               <template slot="title">
                 <span>{{ $t("BUTTONS.show") }}</span>
               </template>
@@ -131,10 +136,7 @@
                 <i class="fal fa-eye"></i>
               </button>
             </a-tooltip>
-            <a-tooltip
-              placement="bottom"
-              v-if="$can('places edit', 'places')"
-            >
+            <a-tooltip placement="bottom" v-if="$can('places edit', 'places')">
               <template slot="title">
                 <span>{{ $t("BUTTONS.edit") }}</span>
               </template>
@@ -246,6 +248,19 @@ export default {
       getAppLocale: "AppLangModule/getAppLocale",
     }),
 
+    placeTypes() {
+      return [
+        {
+          id: "sport",
+          name: this.$t("PLACEHOLDERS.sport"),
+        },
+        {
+          id: "entertainment",
+          name: this.$t("PLACEHOLDERS.entertainment"),
+        },
+      ];
+    },
+
     activeStatuses() {
       return [
         {
@@ -264,6 +279,7 @@ export default {
 
   data() {
     return {
+      cities: [],
       // Start:: Loading Data
       loading: false,
       isWaitingRequest: false,
@@ -273,9 +289,8 @@ export default {
       filterFormIsActive: false,
       filterOptions: {
         name: null,
-        is_active: null,
-        from_date: null,
-        to_date: null,
+        city_id: null,
+        type: null,
       },
       // End:: Filter Data
 
@@ -365,9 +380,8 @@ export default {
     },
     async resetFilter() {
       this.filterOptions.name = null;
-      this.filterOptions.is_active = null;
-      this.filterOptions.from_date = null;
-      this.filterOptions.to_date = null;
+      this.filterOptions.city_id = null;
+      this.filterOptions.type = null;
 
       if (this.$route.query.page !== "1") {
         await this.$router.push({ path: "/places/all", query: { page: 1 } });
@@ -397,7 +411,8 @@ export default {
           params: {
             page: this.paginations.current_page,
             name: this.filterOptions.name,
-            is_active: this.filterOptions.is_active?.value,
+            city_id: this.filterOptions.city_id?.id,
+            type: this.filterOptions.type?.id,
           },
         });
         this.loading = false;
@@ -475,6 +490,19 @@ export default {
       }
     },
     // ===== End:: Delete
+    async fetchCities() {
+      try {
+        const response = await this.$axios.get(
+          "cities?is_active=1&page=0&limit=0"
+        );
+        this.cities = response.data.data.data?.map((city) => ({
+          id: city.id,
+          name: city.name,
+        }));
+      } catch (error) {
+        console.log(error.response?.data?.message || "Error fetching cities");
+      }
+    },
     // ==================== End:: Crud ====================
   },
 
@@ -486,6 +514,7 @@ export default {
     if (this.$route.query.page) {
       this.paginations.current_page = +this.$route.query.page;
     }
+    this.fetchCities();
     this.setTableRows();
     // End:: Fire Methods
   },

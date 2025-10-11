@@ -49,7 +49,7 @@
       <!--  =========== Start:: Table Title =========== -->
       <div class="table_title_wrapper">
         <div class="title_text_wrapper">
-          <h5>{{ $t("TOOLTIPS.notifications") }}</h5>
+          <h5>{{ $t("PLACEHOLDERS.notifications_management") }}</h5>
           <button
             v-if="!filterFormIsActive"
             class="filter_toggler"
@@ -122,14 +122,14 @@
             </button>
           </div>
         </template> -->
-        <template v-slot:[`item.data.title`]="{ item }">
-          <h6 class="text-danger" v-if="!item?.title">---</h6>
+        <template v-slot:[`item.data.title_translated`]="{ item }">
+          <h6 v-if="!item?.title">-</h6>
           <div v-if="item?.title">
             {{ item?.title }}
           </div>
         </template>
-        <template v-slot:[`item.data.body`]="{ item }">
-          <h6 class="text-danger" v-if="!item?.body">---</h6>
+        <template v-slot:[`item.data.body_translated`]="{ item }">
+          <h6 v-if="!item?.body">-</h6>
           <div
             class="dis"
             v-if="item?.body"
@@ -139,6 +139,15 @@
           </div>
         </template>
         <!-- End:: Notification Content -->
+
+        <template v-slot:[`item.data.to_all`]="{ item }">
+          <div v-if="item.data.to_all">
+            {{ $t("PLACEHOLDERS.all") }}
+          </div>
+          <div v-else>
+            {{ $t("PLACEHOLDERS.clients") }}
+          </div>
+        </template>
 
         <!-- Start:: Actions -->
         <template v-slot:[`item.actions`]="{ item }">
@@ -241,13 +250,19 @@ export default {
         },
         {
           text: this.$t("TABLES.Notifications.title"),
-          value: "data.title",
+          value: "data.title_translated",
           align: "center",
           sortable: false,
         },
         {
           text: this.$t("TABLES.Notifications.notification"),
-          value: "data.body",
+          value: "data.body_translated",
+          align: "center",
+          sortable: false,
+        },
+        {
+          text: this.$t("PLACEHOLDERS.recerveType"),
+          value: "data.to_all",
           align: "center",
           sortable: false,
         },
@@ -339,23 +354,23 @@ export default {
         let res = await this.$axios({
           method: "GET",
           // url: "notification/admin-notifications",
-          url: "notification/all_notifications",
+          url: "notification/index",
           params: {
             page: this.paginations.current_page,
             title: this.filterOptions.name,
           },
         });
         this.loading = false;
-        res.data.data.forEach((item, index) => {
+        res.data.data.data?.forEach((item, index) => {
           item.serialNumber =
             (this.paginations.current_page - 1) *
               this.paginations.items_per_page +
             index +
             1;
         });
-        this.tableRows = res.data.data;
-        this.paginations.last_page = res.data.meta.last_page;
-        this.paginations.items_per_page = res.data.meta.per_page;
+        this.tableRows = res.data.data?.data;
+        this.paginations.last_page = res.data?.data?.meta?.last_page;
+        this.paginations.items_per_page = res.data?.data?.meta?.per_page;
       } catch (error) {
         this.loading = false;
         console.log(error.response.data.message);

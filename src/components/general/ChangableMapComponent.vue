@@ -23,8 +23,8 @@
         v-for="(point, index) in points"
         :key="'marker-' + index"
         :position="{ lat: parseFloat(point.lat), lng: parseFloat(point.lng) }"
-        :clickable="true"
-        :draggable="true"
+        :clickable="disabledMap ? false : true"
+        :draggable="disabledMap ? false : true"
         :label="{
           text: (index + 1).toString(),
           color: 'white',
@@ -77,6 +77,10 @@ export default {
       type: Array,
       default: () => []
     },
+    disabledMap: {
+      type: Boolean,
+      default: false
+    }
   },
 
   data() {
@@ -123,6 +127,7 @@ export default {
 
   methods: {
     onMarkerDragEnd(event, index) {
+      if (this.disabledMap) return;
       const newLat = event.latLng.lat();
       const newLng = event.latLng.lng();
 
@@ -134,6 +139,7 @@ export default {
     },
 
     onMapClick(event) {
+      if (this.disabledMap) return;
       const clickedLat = event.latLng.lat();
       const clickedLng = event.latLng.lng();
 
@@ -150,6 +156,7 @@ export default {
     },
 
     removePoint(index) {
+      if (this.disabledMap) return;
       this.points.splice(index, 1);
       this.emitPoints();
     },

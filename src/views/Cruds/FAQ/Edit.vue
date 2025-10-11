@@ -150,15 +150,15 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `faqs/${this.$route.params.id}`,
+          url: `fqas/${this.$route.params.id}`,
         });
-
+        console.log(res.data.data);
         // const data = res.data.data.GoldenOffer;
-        this.data.nameAr = res.data.data.Faq.question_ar;
-        this.data.nameEn = res.data.data.Faq.question_en;
-        this.data.answerAr = res.data.data.Faq.answer_ar;
-        this.data.answerEn = res.data.data.Faq.answer_en;
-        this.data.is_active = res.data.data.Faq.is_active;
+        this.data.nameAr = res.data.data.Fqa?.trans?.question?.ar;
+        this.data.nameEn = res.data.data.Fqa?.trans?.question?.en;
+        this.data.answerAr = res.data.data.Fqa?.trans?.answer?.ar;
+        this.data.answerEn = res.data.data.Fqa?.trans?.answer?.en;
+        this.data.is_active = res.data.data.Fqa?.is_active;
         if (!this.data.is_active) {
           this.data.is_active = {
             id: 0,
@@ -199,7 +199,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `faqs/${this.$route.params.id}`,
+          url: `fqas/${this.$route.params.id}`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;

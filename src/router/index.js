@@ -49,6 +49,7 @@ import AllFinancialPack from "../views/Cruds/FinancialPack/ShowAll.vue";
 // ============== Start:: AppRates Routes
 import AppRatesHome from "../views/Cruds/AppRates/Home.vue";
 import AllAppRates from "../views/Cruds/AppRates/ShowAll.vue";
+import ShowAppRates from "../views/Cruds/AppRates/Show.vue";
 // ============== End:: AppRates Routes
 
 // ============== Start:: StoreRates Routes
@@ -509,7 +510,7 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "settings create",
+                action: "settings edit",
                 subject: "settings",
               },
             },
@@ -521,7 +522,7 @@ const routes = [
           //   meta: {
           //     middleware: [auth],
           //     requiresPermission: {
-          //       action: "settings create",
+          //       action: "settings edit",
           //       subject: "settings",
           //     },
           //   },
@@ -533,7 +534,7 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "settings create",
+                action: "settings edit",
                 subject: "settings",
               },
             },
@@ -545,7 +546,7 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "settings create",
+                action: "settings edit",
                 subject: "settings",
               },
             },
@@ -557,7 +558,7 @@ const routes = [
           //   meta: {
           //     middleware: [auth],
           //     requiresPermission: {
-          //       action: "settings create",
+          //       action: "settings edit",
           //       subject: "settings",
           //     },
           //   },
@@ -569,7 +570,7 @@ const routes = [
             meta: {
               middleware: [auth],
               requiresPermission: {
-                action: "settings create",
+                action: "settings edit",
                 subject: "settings",
               },
             },
@@ -581,7 +582,7 @@ const routes = [
           //   meta: {
           //     middleware: [auth],
           //     requiresPermission: {
-          //       action: "settings create",
+          //       action: "settings edit",
           //       subject: "settings",
           //     },
           //   },
@@ -593,7 +594,7 @@ const routes = [
           //   meta: {
           //     middleware: [auth],
           //     requiresPermission: {
-          //       action: "settings create",
+          //       action: "settings edit",
           //       subject: "settings",
           //     },
           //   },
@@ -605,7 +606,7 @@ const routes = [
           //   meta: {
           //     middleware: [auth],
           //     requiresPermission: {
-          //       action: "settings create",
+          //       action: "settings edit",
           //       subject: "settings",
           //     },
           //   },
@@ -617,7 +618,7 @@ const routes = [
           //   meta: {
           //     middleware: [auth],
           //     requiresPermission: {
-          //       action: "settings create",
+          //       action: "settings edit",
           //       subject: "settings",
           //     },
           //   },
@@ -629,7 +630,7 @@ const routes = [
           //   meta: {
           //     middleware: [auth],
           //     requiresPermission: {
-          //       action: "settings create",
+          //       action: "settings edit",
           //       subject: "settings",
           //     },
           //   },
@@ -2836,28 +2837,41 @@ const routes = [
       // End:: Categories Routes Config
 
       // Start:: app-rates Routes Config
-      // {
-      //   path: "/app-rate",
-      //   name: "AppRatesHome",
-      //   component: AppRatesHome,
-      //   meta: {
-      //     middleware: [auth],
-      //   },
-      //   children: [
-      //     {
-      //       path: "all",
-      //       name: "AllAppRates",
-      //       component: AllAppRates,
-      //       meta: {
-      //         middleware: [auth],
-      //         requiresPermission: {
-      //           action: "rates index",
-      //           subject: "rates",
-      //         },
-      //       },
-      //     },
-      //   ],
-      // },
+      {
+        path: "/app-rate",
+        name: "AppRatesHome",
+        component: AppRatesHome,
+        meta: {
+          middleware: [auth],
+        },
+        children: [
+          {
+            path: "all",
+            name: "AllAppRates",
+            component: AllAppRates,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "rates index",
+                subject: "rates",
+              },
+            },
+          },
+          {
+            path: "show/:id",
+            name: "ShowAppRates",
+            component: ShowAppRates,
+            props: true,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "rates show",
+                subject: "rates",
+              },
+            },
+          },
+        ],
+      },
       // End:: app-rates Routes Config
 
       // Start:: app-rates Routes Config
@@ -3073,7 +3087,7 @@ const routes = [
         meta: {
           middleware: [auth],
           requiresPermission: {
-            action: "settings create",
+            action: "settings edit",
             subject: "settings",
           },
         },

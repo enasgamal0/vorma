@@ -10,13 +10,44 @@
             v-for="(message, index) in receivedMessages"
             :key="'k' + index"
           >
-            <router-link v-if="message?.data?.type != 'delete_account'" :to="message?.data?.type === 'contact_us' ? '/contact-messages/all' : message?.data?.type === 'new_client' ? `/Clients/show/${message?.data.id}` : message?.data?.type === 'new_influencer' ? `/influencers/show/${message?.data.id}` : ''">
-              <h3>{{ message.title }}</h3>
-              <p>{{ message.body }}</p>
+            <router-link
+              v-if="message?.data?.type != 'delete_account' && message?.data?.type != 'contact_us'"
+              :to="
+                 message?.data?.type == 'client_register'
+                  ? `/Clients/show/${message?.data.id}`
+                  : null
+              "
+            >
+              <h3>
+                {{
+                  getAppLocale == "ar"
+                    ? message?.data?.title?.ar
+                    : message?.data?.title?.en
+                }}
+              </h3>
+              <p>
+                {{
+                  getAppLocale == "ar"
+                    ? message?.data?.body?.ar
+                    : message?.data?.body?.en
+                }}
+              </p>
             </router-link>
-            <div v-if="message?.data?.type == 'delete_account'">
-                <h3>{{ message.title }}</h3>
-                <p>{{ message.body }}</p>
+            <div v-if="message?.data?.type == 'delete_account' || message?.data?.type == 'contact_us'">
+              <h3>
+                {{
+                  getAppLocale == "ar"
+                    ? message?.data?.title?.ar
+                    : message?.data?.title?.en
+                }}
+              </h3>
+              <p>
+                {{
+                  getAppLocale == "ar"
+                    ? message?.data?.body?.ar
+                    : message?.data?.body?.en
+                }}
+              </p>
             </div>
             <div
               class="delete_notification"
@@ -29,7 +60,7 @@
             <div
               class="delete_notification"
               :class="{ read: message.is_read }"
-              style="cursor: default;"
+              style="cursor: default"
               v-if="message.is_read"
             >
               <i class="fas fa-check-double"></i>
@@ -129,14 +160,14 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "notification/admin-notifications",
+          url: "notification/user-notifications",
           params: {
             page: this.paginations.current_page,
           },
         });
-        this.receivedMessages = res.data.data;
-        this.paginations.last_page = res.data.meta.last_page;
-        this.paginations.items_per_page = res.data.meta.per_page;
+        this.receivedMessages = res.data.data?.data;
+        this.paginations.last_page = res.data.data?.meta?.last_page;
+        this.paginations.items_per_page = res.data.data?.meta?.per_page;
       } catch (error) {
         this.loading = false;
         console.log(error.response.data.message);

@@ -181,7 +181,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `faqs`,
+          url: `fqas`,
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;

@@ -86,7 +86,10 @@
           <base-select-input
             v-if="data.clients && data.receiverType.value === 'client'"
             col="6"
-:optionsList="data.clients?.concat(data.influencers)"
+            :optionsList="data.clients?.map((item) => ({
+              id: item?.user?.id,
+              name: item?.user?.name,
+            }))"
             :placeholder="$t('PLACEHOLDERS.clients_menu')"
             v-model="data.client"
             required
@@ -194,22 +197,10 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: `clients?page=0&limit=0&is_active=1`,
+          url: `users?type=client?page=0&limit=0&is_active=1`,
         });
 
         this.data.clients = res.data.data.data;
-      } catch (error) {
-        console.log(error.response.data.message);
-      }
-    },
-
-    async getInfluencers() {
-      try {
-        let res = await this.$axios({
-          method: "GET",
-          url: `influencers?status=accepted&page=0&limit=0`,
-        });
-        this.data.influencers = res.data.data.data;
       } catch (error) {
         console.log(error.response.data.message);
       }
@@ -268,17 +259,19 @@ export default {
       const REQUEST_DATA = new FormData();
       // Start:: Append Request Data
       if (this.data.receiverType.value == "client") {
-        REQUEST_DATA.append("to_type", "client");
-        this.data.client.forEach((element) => {
-          REQUEST_DATA.append(`users[]`, element.id);
+        REQUEST_DATA.append("to_all", 0);
+        REQUEST_DATA.append("type", "client");
+        this.data.client?.forEach((element) => {
+          REQUEST_DATA.append(`ids[]`, element?.id);
         });
       } else if (this.data.receiverType.value == "all") {
-        REQUEST_DATA.append("to_type", "all");
+        REQUEST_DATA.append("to_all", 1);
+        REQUEST_DATA.append("type", "all");
       }
-      REQUEST_DATA.append("title[ar]", this.data.titleAr);
-      REQUEST_DATA.append("title[en]", this.data.titleEn);
-      REQUEST_DATA.append("body[ar]", this.data.contentAr);
-      REQUEST_DATA.append("body[en]", this.data.contentEn);
+      REQUEST_DATA.append("title_ar", this.data.titleAr);
+      REQUEST_DATA.append("title_en", this.data.titleEn);
+      REQUEST_DATA.append("body_ar", this.data.contentAr);
+      REQUEST_DATA.append("body_en", this.data.contentEn);
       // Start:: Append Request Data
 
       try {
@@ -301,7 +294,6 @@ export default {
   created() {
     // Start:: Fire Methods
     this.getClients();
-    this.getInfluencers();
     // End:: Fire Methods
   },
 };

@@ -972,49 +972,31 @@
       <!-- End::financial-not-finished-reports Route -->
 
       <!-- Start:: rates Route -->
-      <!-- <div class="side_routes_wrapper">
-        <a-menu
-          style="width: 100%"
-          mode="vertical"
-          :open-keys="openKeys"
-          @openChange="onOpenChange"
-          v-if="$can('rates apprates', 'rates')"
-        >
-          <a-sub-menu
-            v-for="item in sideNavbarList_Rates"
-            :key="item.key"
-            :data-type="!item.children ? 'single_route' : ''"
-            style="border: none"
-          >
-            <template v-if="item.children">
-              <span slot="title">
-                <img :src="item.icon" alt="icon" width="35" height="35" />
-                <span> {{ item.title }} </span>
-              </span>
-
-              <a-menu-item
-                v-for="childItem in item.children"
-                :key="childItem.key"
-              >
-                <button
-                  v-if="childItem.hasPermission"
-                  class="text-start w-100"
-                  @click="$emit('fireToggleNavDrawerEmit')"
-                >
-                  <router-link :to="childItem.route">
-                    <i class="fad fa-circle"></i>
-                    {{ childItem.title }}
-                  </router-link>
-                </button>
-              </a-menu-item>
-            </template>
-          </a-sub-menu>
-        </a-menu>
-      </div> -->
+       <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="
+          $can('rates index', 'rates')
+        "
+      >
+        <router-link to="/app-rate/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/star.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.rates") }}
+          </span>
+        </router-link>
+      </div>
       <!-- Start:: rates Route -->
 
       <!-- Start:: notifications Route -->
-      <!-- <div
+      <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
         v-if="$can('notifications index', 'notifications')"
@@ -1029,22 +1011,22 @@
             />
           </span>
           <span class="route_text">
-            {{ $t("SIDENAV.notifications.title") }}
+            {{ $t("PLACEHOLDERS.notifications_management") }}
           </span>
         </router-link>
-      </div> -->
+      </div>
       <!-- End:: notifications Route -->
 
       <!-- Start:: FAQ Route -->
       <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
-        v-if="$can('faqs index', 'faqs')"
+        v-if="$can('fqas index', 'fqas')"
       >
         <router-link to="/questions/all">
           <span class="route_icon">
             <img
-              src="@/assets/media/icons/ui_icons/question.png"
+              src="@/assets/media/icons/ui_icons/messages.svg"
               alt="icon"
               width="40"
               height="40"
@@ -1079,7 +1061,7 @@
       </div> -->
       <!-- End:: app settings Route -->
       <!-- Start:: Side Nav Routes -->
-      <!-- <div class="side_routes_wrapper" v-if="$can('settings index', 'settings')">
+      <div class="side_routes_wrapper" v-if="$can('settings index', 'settings')">
         <a-menu
           style="width: 100%"
           mode="vertical"
@@ -1116,7 +1098,7 @@
             </template>
           </a-sub-menu>
         </a-menu>
-      </div> -->
+      </div>
       <!-- End:: Side Nav Routes -->
 
       <!-- Start:: contacts Route -->
@@ -1347,67 +1329,67 @@ export default {
               key: "contact",
               title: this.$t("PLACEHOLDERS.contact_admins"),
               route: "/contact_settings",
-              hasPermission: this.$can("settings create", "settings"),
+              hasPermission: this.$can("settings edit", "settings"),
             },
             {
               key: "AboutUs",
               title: this.$t("SIDENAV.AppContent.aboutUs"),
               route: "/app-content/about-us",
-              hasPermission: this.$can("settings create", "settings"),
+              hasPermission: this.$can("settings edit", "settings"),
             },
             // {
             //   key: "addresses",
             //   title: this.$t("SIDENAV.AppContent.addresses"),
             //   route: "/app-content/addresses",
-            //   hasPermission: this.$can("settings create", "settings"),
+            //   hasPermission: this.$can("settings edit", "settings"),
             // },
             {
               key: "termsAndConditions",
               title: this.$t("SIDENAV.AppContent.termsAndConditions"),
               route: "/app-content/terms",
-              hasPermission: this.$can("settings create", "settings"),
+              hasPermission: this.$can("settings edit", "settings"),
             },
             {
               key: "privacyPolicy",
               title: this.$t("SIDENAV.AppContent.privacyPolicy"),
               route: "/app-content/policy",
-              hasPermission: this.$can("settings create", "settings"),
+              hasPermission: this.$can("settings edit", "settings"),
             },
             {
               key: "delete-account",
               title: this.$t("PLACEHOLDERS.how_to_delete_account"),
               route: "/app-content/delete-account",
-              hasPermission: this.$can("settings create", "settings"),
+              hasPermission: this.$can("settings edit", "settings"),
             },
             // {
             //   key: "vision",
             //   title: this.$t("PLACEHOLDERS.vision"),
             //   route: "/app-content/vision",
-            //   hasPermission: this.$can("settings create", "settings"),
+            //   hasPermission: this.$can("settings edit", "settings"),
             // },
             // {
             //   key: "goals",
             //   title: this.$t("PLACEHOLDERS.goals"),
             //   route: "/app-content/goals",
-            //   hasPermission: this.$can("settings create", "settings"),
+            //   hasPermission: this.$can("settings edit", "settings"),
             // },
             // {
             //   key: "message",
             //   title: this.$t("PLACEHOLDERS.message"),
             //   route: "/app-content/message",
-            //   hasPermission: this.$can("settings create", "settings"),
+            //   hasPermission: this.$can("settings edit", "settings"),
             // },
             // {
             //   key: "statistics",
             //   title: this.$t("PLACEHOLDERS.statistics"),
             //   route: "/app-content/statistics",
-            //   hasPermission: this.$can("settings create", "settings"),
+            //   hasPermission: this.$can("settings edit", "settings"),
             // },
             // {
             //   key: "influencer",
             //   title: this.$t("PLACEHOLDERS.influencer"),
             //   route: "/app-content/influencer",
-            //   hasPermission: this.$can("settings create", "settings"),
+            //   hasPermission: this.$can("settings edit", "settings"),
             // },
           ],
         },

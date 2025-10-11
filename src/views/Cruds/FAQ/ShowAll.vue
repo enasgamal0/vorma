@@ -48,7 +48,7 @@
           </button>
         </div>
 
-        <div class="title_route_wrapper" v-if="$can('faqs create', 'faqs')">
+        <div class="title_route_wrapper" v-if="$can('fqas create', 'fqas')">
           <router-link to="/questions/create">
             {{ $t("SIDENAV.questions.add") }}
           </router-link>
@@ -98,7 +98,7 @@
         <!-- Start:: Activation -->
         <template v-slot:[`item.is_active`]="{ item }">
           <!-- v-if="permissions.activate" -->
-          <div class="activation" dir="ltr" style="z-index: 1" v-if="$can('faqs activate', 'faqs')">
+          <div class="activation" dir="ltr" style="z-index: 1" v-if="$can('fqas activate', 'fqas')">
             <v-switch class="mt-2" color="success" v-model="item.is_active" hide-details
               @change="changeActivationStatus(item)"></v-switch>
           </div>
@@ -108,7 +108,7 @@
         <!-- Start:: Actions -->
         <template v-slot:[`item.actions`]="{ item }">
           <div class="actions">
-            <a-tooltip placement="bottom" v-if="$can('faqs edit', 'faqs')">
+            <a-tooltip placement="bottom" v-if="$can('fqas edit', 'fqas')">
               <template slot="title">
                 <span>{{ $t("BUTTONS.edit") }}</span>
               </template>
@@ -117,7 +117,7 @@
               </button>
             </a-tooltip>
 
-            <a-tooltip placement="bottom" v-if="$can('faqs delete', 'faqs')">
+            <a-tooltip placement="bottom" v-if="$can('fqas delete', 'fqas')">
               <template slot="title">
                 <span>{{ $t("BUTTONS.delete") }}</span>
               </template>
@@ -360,7 +360,7 @@ export default {
       try {
         let res = await this.$axios({
           method: "GET",
-          url: "faqs",
+          url: "fqas",
           params: {
             page: this.paginations.current_page,
             question: this.filterOptions.title,
@@ -397,7 +397,7 @@ export default {
       try {
         await this.$axios({
           method: "POST",
-          url: `faqs/status/${item.id}`,
+          url: `fqas/activate/${item.id}`,
           data: REQUEST_DATA,
         });
         this.setTableRows();
@@ -425,7 +425,7 @@ export default {
       try {
         await this.$axios({
           method: "DELETE",
-          url: `faqs/${this.itemToDelete.id}`,
+          url: `fqas/${this.itemToDelete.id}`,
         });
         this.dialogDelete = false;
         this.setTableRows();
