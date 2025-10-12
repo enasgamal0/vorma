@@ -666,6 +666,25 @@
       <div
         class="home_route"
         @click="$emit('fireToggleNavDrawerEmit')"
+        v-if="$can('places index', 'places')"
+      >
+        <router-link to="/places_report/all">
+          <span class="route_icon">
+            <img
+              src="@/assets/media/icons/ui_icons/bill.svg"
+              alt="icon"
+              width="40"
+              height="40"
+            />
+          </span>
+          <span class="route_text">
+            {{ $t("PLACEHOLDERS.places_report") }}
+          </span>
+        </router-link>
+      </div>
+      <div
+        class="home_route"
+        @click="$emit('fireToggleNavDrawerEmit')"
         v-if="$can('nationalities index', 'nationalities')"
       >
         <router-link to="/nationalities/all">

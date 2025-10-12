@@ -194,12 +194,12 @@ export default {
     async NotificationsReaded(item_id) {
       try {
         const REQUEST_DATA = new FormData();
-        REQUEST_DATA.append("notification_id", item_id);
+        // REQUEST_DATA.append("notification_id", item_id);
 
         let res = await this.$axios({
-          method: "POST",
-          url: `notification/mark-as-read`,
-          data: REQUEST_DATA,
+          method: "GET",
+          url: `notification/read/${item_id}`,
+          // data: REQUEST_DATA,
         });
 
         this.$message.success(res.data.message);

@@ -1269,6 +1269,9 @@
   },
 
   "PLACEHOLDERS": {
+    "people_number": "عدد الأشخاص الموجودين بالمكان",
+    "people_with_activity": "عدد من يقومون بنشاط رياضي داخل المكان",
+    "places_report": "تقارير التفاعلات في الأماكن الرياضية",
     "notifications_management": "إدارة الإشعارات",
     "showRate": "عرض تفاصيل تقييم",
     "click_to_add_points": "اضغط على الخريطة لإضافة نقاط تحديد الموقع",

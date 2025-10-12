@@ -1268,6 +1268,9 @@
   },
 
   "PLACEHOLDERS": {
+    "people_number": "Number of people in the place",
+    "people_with_activity": "Number of people engaged in sports activity inside the place",
+    "places_report": "Sports places interaction reports",
     "notifications_management": "Notifications Management",
     "showRate": "Show Rate Details",
     "click_to_add_points": "Click on Map to add points to set location",

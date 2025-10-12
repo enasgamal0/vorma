@@ -32,14 +32,7 @@
           />
           <div class="overlay">
             <span
-              v-if="imgUrl.startsWith('blob')"
-              @click.stop="onRemove(index, 'new')"
-              class="remove-file"
-              >x</span
-            >
-            <span
-              v-else
-              @click.stop="onRemove(index, 'old')"
+              @click.stop="onRemove(index)"
               class="remove-file"
               >x</span
             >
@@ -80,18 +73,12 @@ export default {
     },
   },
   data() {
-    return {
-      files: [],
-    };
+    return {};
   },
   methods: {
-    onRemove(index, type) {
-      if (type === "new") {
-        this.$delete(this.files, index - this.urls.length);
-        this.$emit("onFileSelect", this.files);
-      } else {
-        this.$emit("onFileRemove", index);
-      }
+    onRemove(index) {
+      // Just emit the index - let parent handle the logic
+      this.$emit("onFileRemove", index);
     },
 
     onFileClick() {
@@ -120,8 +107,7 @@ export default {
 
       if (areAllTextsInvalidImages(Array.from(event.target.files))) {
         const convertedFiles = Array.from(event.target.files);
-        this.files = [...this.files, ...convertedFiles];
-        this.$emit("onFileSelect", this.files);
+        this.$emit("onFileSelect", convertedFiles);
       } else {
         this.$message.error(this.$t("VALIDATION.selectedFileMustBeImage"));
       }
@@ -130,11 +116,8 @@ export default {
 
   computed: {
     combinedUrls() {
-      const imageFiles = this.files?.filter((file) =>
-        file.type.startsWith("image/")
-      );
-      const imageUrls = imageFiles?.map((file) => URL.createObjectURL(file));
-      return [...this.urls, ...imageUrls];
+      // Just return the urls prop - parent handles everything
+      return this.urls;
     },
   },
 };

@@ -33,7 +33,7 @@
             }}) <span style="color: #e63757">*</span>
           </base-multi-image-upload-input>
           <!-- End:: Multi Image Upload Input -->
-          
+
           <!-- Start:: Name Input -->
           <base-input
             col="6"
@@ -558,25 +558,63 @@ export default {
     },
 
     onFileSelect(files) {
-      if (files.length > 5) {
+      // Calculate total after adding new files
+      const totalImagesCount = this.existingImages.length + this.additionalImages.length + files.length;
+
+      if (totalImagesCount > 5) {
         this.$message.warning(this.$t("VALIDATION.max_5_images"));
-        this.additionalImages = Array.from(files).slice(0, 5);
+        
+        const allowedToAdd = 5 - (this.existingImages.length + this.additionalImages.length);
+        
+        if (allowedToAdd > 0) {
+          const filesToAdd = files.slice(0, allowedToAdd);
+          this.additionalImages.push(...filesToAdd);
+          this.imgUrls = [
+            ...this.existingImages.map(img => img.url),
+            ...this.additionalImages.map(f => URL.createObjectURL(f))
+          ];
+        }
       } else {
-        this.additionalImages = files;
+        // Add to existing additionalImages
+        this.additionalImages.push(...files);
+        this.imgUrls = [
+          ...this.existingImages.map(img => img.url),
+          ...this.additionalImages.map(f => URL.createObjectURL(f))
+        ];
       }
     },
 
-    onFileRemove(index) {
-      // Check if removing an existing image or a new one
-      if (index < this.existingImages.length) {
-        // Remove from existing images
-        this.existingImages.splice(index, 1);
-      } else {
-        // Remove from new images
-        const newImageIndex = index - this.existingImages.length;
-        this.additionalImages.splice(newImageIndex, 1);
+    async onFileRemove(index) {
+      try {
+        if (index < this.existingImages.length) {
+          const imageToDelete = this.existingImages[index];
+
+          if (
+            this.existingImages?.length == 1 &&
+            this.additionalImages?.length == 0
+          ) {
+            this.$message.warning(this.$t("VALIDATION.min_1_image"));
+            return;
+          }
+
+          await this.$axios.delete(`media/${imageToDelete.id}`);
+
+          this.existingImages.splice(index, 1);
+          this.imgUrls.splice(index, 1);
+
+          this.$message.success(this.$t("MESSAGES.deletedSuccessfully"));
+        }
+        else {
+          const newImageIndex = index - this.existingImages.length;
+          this.additionalImages.splice(newImageIndex, 1);
+          this.imgUrls.splice(index, 1);
+        }
+      } catch (error) {
+        console.error(error);
+        this.$message.error(
+          error.response?.data?.message || this.$t("MESSAGES.deleteFailed")
+        );
       }
-      this.$delete(this.imgUrls, index);
     },
 
     validateFormInputs() {
@@ -586,7 +624,7 @@ export default {
 
     async submitForm() {
       const REQUEST_DATA = new FormData();
-      
+
       REQUEST_DATA.append("_method", "PUT");
 
       // Basic Information
