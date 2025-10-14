@@ -1,0 +1,806 @@
+<template>
+  <div class="show_all_content_wrapper">
+    <!-- Start:: Main Section -->
+    <main>
+      <!--  =========== Start:: Filter Form =========== -->
+      <!-- <div
+        class="filter_content_wrapper"
+        :class="{ active: filterFormIsActive }"
+      >
+        <button
+          class="filter_toggler"
+          @click="filterFormIsActive = !filterFormIsActive"
+        >
+          <i class="fal fa-times"></i>
+        </button>
+        <div class="filter_title_wrapper">
+          <h5>{{ $t("TITLES.searchBy") }}</h5>
+        </div>
+        <div class="filter_form_wrapper">
+          <form @submit.prevent="submitFilterForm">
+            <div class="row justify-content-center align-items-center w-100">
+              <base-input
+                col="4"
+                type="text"
+                :placeholder="$t('SIDENAV.Clients.name')"
+                v-model.trim="filterOptions.name"
+              />
+
+              <base-input
+                col="4"
+                type="text"
+                :placeholder="$t('PLACEHOLDERS.phone')"
+                v-model.trim="filterOptions.mobile"
+              />
+
+              <base-select-input
+                :optionsList="activeStatuses"
+                col="4"
+                :placeholder="$t('PLACEHOLDERS.status')"
+                v-model="filterOptions.status"
+              />
+            </div>
+
+            <div class="btns_wrapper">
+              <button class="submit_btn" :disabled="isWaitingRequest">
+                <i class="fal fa-search"></i>
+              </button>
+              <button
+                class="reset_btn"
+                type="button"
+                :disabled="isWaitingRequest"
+                @click="resetFilter"
+              >
+                <i class="fal fa-redo"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div> -->
+      <!--  =========== End:: Filter Form =========== -->
+
+      <!--  =========== Start:: Table Title =========== -->
+      <div class="table_title_wrapper">
+        <div class="title_text_wrapper">
+          <h5>{{ $t("PLACEHOLDERS.users_list") }}: {{ placeName }}</h5>
+          <button
+            v-if="!filterFormIsActive"
+            class="filter_toggler"
+            @click.stop="filterFormIsActive = !filterFormIsActive"
+          >
+            <i class="fal fa-search"></i>
+          </button>
+        </div>
+
+        <div class="title_route_wrapper">
+          <!-- <div class="excel" @click="downloadExcel">
+            {{ $t("BUTTONS.downloadExcel") }}
+          </div> -->
+
+          <!-- <base-button
+            class="mt-0 pdf_btn"
+            styleType="solid_btn"
+            :btnText="$t('BUTTONS.downloadPdf')"
+            @fireClick="downloadPdf"
+            :disabled="pdfDownloadBtnIsLoading"
+          >
+            <template v-slot:btn_icon>
+              <i class="fal fa-file-pdf"></i>
+            </template>
+          </base-button> -->
+        </div>
+      </div>
+      <!--  =========== End:: Table Title =========== -->
+
+      <!--  =========== Start:: Data Table =========== -->
+      <v-data-table
+        class="thumb"
+        :loading="loading"
+        :loading-text="$t('TABLES.loadingData')"
+        :search="searchValue"
+        :headers="tableHeaders"
+        :items="tableRows"
+        item-class="ltr"
+        hide-default-footer
+      >
+        <!-- :items-per-page="paginations.items_per_page" -->
+        <!-- Start:: No Data State -->
+        <template v-slot:no-data>
+          {{ $t("TABLES.noData") }}
+        </template>
+        <!-- Start:: No Data State -->
+
+        <template v-slot:[`item.user.gender`]="{ item }">
+          <h6 v-if="!item.user?.gender">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.gender }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.city`]="{ item }">
+          <h6 v-if="!item.user?.city">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.city?.name || item.user?.city }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.name`]="{ item }">
+          <h6 v-if="!item.user?.name">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.name }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.username`]="{ item }">
+          <h6 v-if="!item.user?.username">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.username }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.mobile`]="{ item }">
+          <h6 v-if="!item.user?.mobile">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.mobile }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.email`]="{ item }">
+          <h6 v-if="!item.user?.email">
+            -
+          </h6>
+          <h6 v-else>{{ item.user?.email }}</h6>
+        </template>
+
+        <template v-slot:[`item.user.id`]="{ item, index }">
+          <div class="table_image_wrapper">
+            <h6 v-if="!item.user?.id">
+              -
+            </h6>
+            <p v-else>
+              {{
+                (paginations.current_page - 1) * paginations.items_per_page +
+                index +
+                1
+              }}
+            </p>
+          </div>
+        </template>
+
+        <!-- Start:: Item Image -->
+        <template v-slot:[`item.user.image`]="{ item }">
+          <div class="table_image_wrapper">
+            <h6 class="text-danger" v-if="!item.user?.image">
+              {{ $t("TABLES.noData") }}
+            </h6>
+
+            <button class="my-1" @click="showImageModal(item)" v-else>
+              <video
+                v-if="item.user?.image.endsWith('mp4')"
+                :src="item.user?.image"
+                width="80"
+                height="60"
+                class="rounded"
+              ></video>
+              <img
+                v-else
+                class="rounded"
+                :src="item.user?.image"
+                width="60"
+                height="60"
+              />
+            </button>
+          </div>
+        </template>
+        <!-- End:: Item Image -->
+
+        Gender
+
+        <!-- Start:: Activation Status -->
+        <template v-slot:[`item.user.is_active`]="{ item }">
+          <span class="text-success text-h5" v-if="item?.user?.is_active">
+            <i class="far fa-check"></i>
+          </span>
+          <span class="text-danger text-h5" v-else>
+            <i class="far fa-times"></i>
+          </span>
+        </template>
+        <!-- End:: Activation Status -->
+
+        <!-- ======================== Start:: Dialogs ======================== -->
+        <template v-slot:top>
+          <!-- Start:: Image Modal -->
+          <image-modal
+            v-if="dialogImage"
+            :type="selectedItemType"
+            :modalIsOpen="dialogImage"
+            :modalImage="selectedItemImage"
+            @toggleModal="dialogImage = !dialogImage"
+          />
+          <!-- End:: Image Modal -->
+          <!-- Start:: Deactivate Modal -->
+          <v-dialog v-model="dialogDeactivate">
+            <v-card>
+              <v-card-title
+                class="text-h5 justify-center"
+                v-if="itemToChangeActivationStatus"
+              >
+                {{
+                  $t("TITLES.DeactivateConfirmingMessage", {
+                    name: itemToChangeActivationStatus?.user?.name,
+                  })
+                }}
+              </v-card-title>
+
+              <form class="w-100">
+                <base-input
+                  col="12"
+                  rows="3"
+                  type="textarea"
+                  :placeholder="$t('PLACEHOLDERS.deactivateReason')"
+                  v-model.trim="deactivateReason"
+                  required
+                />
+              </form>
+
+              <v-card-actions>
+                <v-btn
+                  class="modal_confirm_btn"
+                  @click="HandlingItemActivationStatus"
+                  :disabled="
+                    !!!deactivateReason || deactivateReason?.length < 3
+                  "
+                >
+                  {{ $t("BUTTONS.ok") }}
+                </v-btn>
+
+                <v-btn
+                  class="modal_cancel_btn"
+                  @click="dialogDeactivate = false"
+                  >{{ $t("BUTTONS.cancel") }}</v-btn
+                >
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- End:: Deactivate Modal -->
+           <!-- Start:: Delete Modal -->
+          <v-dialog v-model="dialogDelete">
+            <v-card>
+              <v-card-title class="text-h5 justify-center" v-if="itemToDelete">
+                {{
+                  $t("TITLES.DeleteConfirmingMessage", {
+                    name: itemToDelete?.user?.name,
+                  })
+                }}
+              </v-card-title>
+              <v-card-actions>
+                <v-btn class="modal_confirm_btn" @click="confirmDeleteItem">{{
+                  $t("BUTTONS.ok")
+                }}</v-btn>
+
+                <v-btn class="modal_cancel_btn" @click="dialogDelete = false">{{
+                  $t("BUTTONS.cancel")
+                }}</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <!-- End:: Delete Modal -->
+          <!-- Start:: pdf Modal -->
+          <!-- <v-dialog v-model="dialogPdf">
+            <v-card>
+              <button class="ex-btn-s" @click="clickedDownload"> {{ $t("PLACEHOLDERS.export_pdf") }}</button>
+
+              <v-card-actions>
+                <v-btn class="modal_cancel_btn" @click="dialogPdf = false">{{ $t("BUTTONS.cancel") }}</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog> -->
+          <!-- End:: pdf Modal -->
+
+          <!-- Start:: excel Modal -->
+          <!-- <v-dialog v-model="dialogExcel">
+            <v-card>
+              <a class="ex-btn-s" :href="excel" download>
+                {{ $t("PLACEHOLDERS.export_excel") }}
+              </a>
+              <v-card-actions>
+                <v-btn class="modal_cancel_btn" @click="dialogExcel = false">{{ $t("BUTTONS.cancel") }}</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog> -->
+          <!-- End:: excel Modal -->
+        </template>
+        <!-- ======================== End:: Dialogs ======================== -->
+      </v-data-table>
+      <!--  =========== End:: Data Table =========== -->
+      <!-- ==== Start:: Overall_statistics Addresses ==== -->
+      <div class="table_content">
+        <div class="table_title_wrapper">
+          <div class="title_text_wrapper">
+            <!-- <h5>{{ $t("PLACEHOLDERS.Overall_statistics") }}</h5> -->
+          </div>
+        </div>
+        <!-- <v-simple-table class="stat-table">
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-center">
+                  {{ $t("PLACEHOLDERS.totalTaxValue") }}
+                </th>
+                <th class="text-center">
+                  {{ $t("PLACEHOLDERS.total_platform_profit") }}
+                </th>
+                <th class="text-center">
+                  {{ $t("PLACEHOLDERS.totalOrdars") }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <template>
+                <tr class="text-center all-stat">
+                  <td>{{ total_tax }}</td>
+                  <td>{{ totalProfitWithTax }}</td>
+                  <td>{{ totalInvestedMoney }}</td>
+                </tr>
+              </template>
+            </tbody>
+          </template>
+        </v-simple-table> -->
+      </div>
+      <!-- ==== End:: Overall_statistics Addresses ==== -->
+    </main>
+    <!-- End:: Main Section -->
+
+    <!-- Start:: Pagination -->
+    <template>
+      <div class="pagination_container text-center mt-3 mb-0">
+        <v-pagination class="py-0" square v-model="paginations.current_page" :length="paginations.last_page"
+          :total-visible="6" @input="updateRouterQueryParam($event)" :prev-icon="getAppLocale == 'ar' ? 'fal fa-angle-right' : 'fal fa-angle-left'
+            " :next-icon="getAppLocale == 'ar' ? 'fal fa-angle-left' : 'fal fa-angle-right'
+              " />
+      </div>
+    </template>
+    <!-- End:: Pagination -->
+
+    <!-- Start:: Generate PDF Template Content -->
+    <vue-html2pdf
+      :show-layout="false"
+      :float-layout="true"
+      :enable-download="true"
+      :preview-modal="true"
+      :filename="$t('PLACEHOLDERS.financialpack')"
+      :pdf-quality="2"
+      pdf-format="a4"
+      :manual-pagination="false"
+      :paginate-elements-by-height="1400"
+      pdf-content-width="100%"
+      @progress="bdfDownloadBtnIsLoading = true"
+      @hasGenerated="$message.success($t('MESSAGES.generatedSuccessfully'))"
+      ref="html2Pdf"
+    >
+      <section slot="pdf-content">
+        <div class="pdf_file_content">
+          <h3 class="file_title">{{ $t("PLACEHOLDERS.financialpack") }}</h3>
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th
+                    v-for="(header, index) in tableHeaders"
+                    :key="header.value"
+                  >
+                    <span v-if="index !== 5">{{ header.text }}</span>
+                  </th>
+                </tr>
+              </thead>
+              <!-- <tbody>
+                <tr v-for="row in tableRows" :key="row.id">
+                  <td>{{ row.id ? row.id : "-" }}</td>
+                  <td>{{ row.package_name ? row.package_name : "-" }}</td>
+                  <td>{{ row.perioud ? row.perioud : "-" }}</td>
+                  <td>
+                    {{ row.sub_total ? row.sub_total : "-" }}
+                  </td>
+                  <td>{{ row.total ? row.total : "-" }}</td>
+                  <td>{{ row.tax ? row.tax : "-" }}</td>
+                </tr>
+              </tbody> -->
+            </template>
+          </v-simple-table>
+        </div>
+      </section>
+    </vue-html2pdf>
+    <!-- End:: Generate PDF Template Content -->
+  </div>
+</template>
+
+<script>
+import VueHtml2pdf from "vue-html2pdf";
+import { mapGetters } from "vuex";
+
+export default {
+  name: "AllFinancialReports",
+
+  components: {
+    VueHtml2pdf,
+  },
+
+  computed: {
+    ...mapGetters({
+      getAppLocale: "AppLangModule/getAppLocale",
+    }),
+    activeStatuses() {
+      return [
+        {
+          id: 1,
+          name: this.$t("STATUS.active"),
+          value: 1,
+        },
+        {
+          id: 2,
+          name: this.$t("STATUS.notActive"),
+          value: false,
+        },
+      ];
+    },
+  },
+
+  data() {
+    return {
+      placeName: null,
+      statistic: {
+        count: null,
+        providerRevenu: null,
+        appRevenu: null,
+        totalVat: null,
+      },
+
+      // Start:: Image Modal
+      dialogImage: false,
+      selectedItemImage: null,
+      selectedItemType: "image",
+      // End:: Image Modal
+
+      // Start:: Loading Data
+      loading: false,
+      isWaitingRequest: false,
+      pdfDownloadBtnIsLoading: false,
+      excelDownloadBtnIsLoading: false,
+      // End:: Loading Data
+
+      // Start:: Filter Data
+      filterFormIsActive: false,
+      filterOptions: {
+        name: null,
+        mobile: null,
+        status: null,
+      },
+      allproviders: [],
+      // End:: Filter Data
+
+      // Start:: Table Data
+      searchValue: "",
+      tableHeaders: [
+        {
+          text: this.$t("TABLES.Admins.serialNumber"),
+          value: "user.id",
+          align: "center",
+          sortable: false,
+        },
+        {
+          text: this.$t("PLACEHOLDERS.image"),
+          value: "user.image",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.name"),
+          value: "user.name",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.user_name"),
+          value: "user.username",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.phone"),
+          value: "user.mobile",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.email"),
+          value: "user.email",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.gender"),
+          value: "user.gender",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.city"),
+          value: "user.city",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.joiningDate"),
+          value: "user.created_at",
+          sortable: false,
+          align: "center",
+        },
+        {
+          text: this.$t("PLACEHOLDERS.status"),
+          value: "user.is_active",
+          sortable: false,
+          align: "center",
+        },
+      ],
+      tableRows: [],
+      users: [],
+      // End:: Table Data
+
+      // Start:: Pagination Data
+      paginations: {
+        current_page: 1,
+        last_page: 1,
+        items_per_page: 6,
+      },
+      // End:: Pagination Data
+      // Start:: Dialogs Control Data
+      dialogImage: false,
+      selectedItemImage: null,
+      dialogDeactivate: false,
+      itemToChangeActivationStatus: null,
+      deactivateReason: null,
+      dialogDescription: false,
+      selectedDescriptionTextToShow: "",
+      dialogPdf: false,
+      itemToPdf: null,
+      dialogExcel: false,
+      itemToExcel: null,
+      dialogDelete: false,
+      itemToDelete: null,
+      // End:: Dialogs Control Data
+
+      // Start:: Page Permissions
+      permissions: null,
+      // Start:: Page Permissions
+      totalInvestedMoney: null,
+      total_tax: null,
+      pdf: null,
+      excel_report: null,
+      totalProfitWithTax: null,
+    };
+  },
+
+  watch: {
+    // Start:: Page Query Param Watcher To Get Page Data Based On It's Change
+    ["$route.query.page"]() {
+      this.paginations.current_page = +this.$route.query.page;
+      this.setTableRows();
+    },
+    // End:: Page Query Param Watcher To Get Page Data Based On It's Change
+  },
+
+  methods: {
+    // Start:: Handel Filter
+    async submitFilterForm() {
+      // if (this.$route.query.page !== "1") {
+      // await this.$router.push({
+      //   path: "/financialpack/all",
+      //   // query: { page: 1 },
+      // });
+      // }
+      this.setTableRows();
+    },
+    async resetFilter() {
+      this.filterOptions.name = null;
+      this.filterOptions.mobile = null;
+      this.filterOptions.status = null;
+      // if (this.$route.query.page !== "1") {
+      // await this.$router.push({
+      //   path: "/financialpack/all",
+      //   // query: { page: 1 },
+      // });
+      // }
+      this.setTableRows();
+    },
+    // End:: Handel Filter
+
+    // Start:: Set Table Rows
+    updateRouterQueryParam(pagenationValue) {
+      this.$router.push({
+        query: {
+          ...this.$route.query,
+          page: pagenationValue,
+        },
+      });
+
+      // Scroll To Screen's Top After Get Products
+      document.body.scrollTop = 0; // For Safari
+      document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+    },
+    async setTableRows() {
+      this.loading = true;
+      try {
+        let res = await this.$axios({
+          method: "GET",
+          url: "places/current-users/" + this.$route.params?.id,
+          params: {
+            page: this.paginations.current_page,
+            name: this.filterOptions.name,
+            mobile: this.filterOptions.mobile,
+            status: this.filterOptions.status?.value,
+          },
+        });
+        this.loading = false;
+        this.placeName = this.getAppLocale == "ar" ? this.$route.query.place_ar : this.$route.query.place_en;
+        this.tableRows = res.data.data?.data;
+        this.paginations.last_page = res.data.data?.meta?.last_page;
+        this.paginations.items_per_page = res.data.data?.meta?.per_page;
+      } catch (error) {
+        this.loading = false;
+        console.log(error.response.data.message);
+      }
+    },
+    // End:: Set Table Rows
+
+    selectDeactivateItem(item) {
+      this.dialogDeactivate = true;
+      this.itemToChangeActivationStatus = item;
+    },
+
+    async HandlingItemActivationStatus(selectedItem) {
+      this.dialogDeactivate = false;
+      let targetItem = this.itemToChangeActivationStatus
+        ? this.itemToChangeActivationStatus
+        : selectedItem;
+      const REQUEST_DATA = new FormData();
+      // Start:: Append Request Data
+      if (this.deactivateReason) {
+        REQUEST_DATA.append("reason", this.deactivateReason);
+      }
+      // REQUEST_DATA.append("is_active", targetItem.is_active == 1 ? 0 : 1);
+      // Start:: Append Request Data
+      // REQUEST_DATA.append("_method", "PUT");
+
+      try {
+        await this.$axios({
+          method: "POST",
+          url: `users/activate/${targetItem?.user?.id}`,
+          data: REQUEST_DATA,
+        });
+        this.$message.success(this.$t("MESSAGES.changeActivation"));
+        this.setTableRows();
+
+        this.itemToChangeActivationStatus = null;
+        this.deactivateReason = null;
+      } catch (error) {
+        this.$message.error(error.response.data.message);
+      }
+    },
+
+    // Start:: Handling Download Files
+    async downloadPdf() {
+      await this.$refs.html2Pdf.generatePdf();
+      this.pdfDownloadBtnIsLoading = false;
+    },
+
+    async downloadExcel() {
+      window.open(
+        "https://backend.vorma.moltaqadev.com/export-users?type=client",
+        "_blank"
+      );
+    },
+    // End:: Handling Download Files
+
+    // ==================== Start:: Crud ====================
+    // ===== Start:: Show
+    showItem(item) {
+      this.$router.push({ path: `/clients/show/${item?.user?.id}` });
+    },
+    // ===== End:: Show
+
+    // ===== Start:: Delete
+    selectDeleteItem(item) {
+      this.dialogDelete = true;
+      this.itemToDelete = item;
+    },
+    async confirmDeleteItem() {
+      try {
+        await this.$axios({
+          method: "DELETE",
+          url: `users/${this.itemToDelete?.user?.id}`,
+        });
+        this.dialogDelete = false;
+        this.tableRows = this.tableRows.filter((item) => {
+          return item.id != this.itemToDelete?.user?.id;
+        });
+        this.setTableRows();
+        this.$message.success(this.$t("MESSAGES.deletedSuccessfully"));
+      } catch (error) {
+        this.dialogDelete = false;
+        this.$message.error(error.response.data.message);
+      }
+    },
+    // ===== End:: Delete
+
+    showImageModal(item) {
+      this.dialogImage = true;
+      this.selectedItemImage = item.user?.image;
+      const videoExtensions = ["mp4", "mov", "avi", "wmv", "flv", "mkv", "webm", "m4v"];
+      const fileExtension = item.user?.image?.split(".").pop().toLowerCase();
+      this.selectedItemType = videoExtensions?.includes(fileExtension) ? "video" : "image";
+    },
+
+    // ==================== End:: Crud ====================
+  },
+
+  created() {
+    // Start:: Fire Methods
+    window.addEventListener("click", () => {
+      this.filterFormIsActive = false;
+    });
+    if (this.$route.query.page) {
+      this.paginations.current_page = +this.$route.query.page;
+    }
+    this.setTableRows();
+    // End:: Fire Methods
+  },
+};
+</script>
+
+<style scoped>
+.ex-btn-s {
+  color: black !important;
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: underline !important;
+}
+
+.all-stat {
+  background: var(--main_theme_clr);
+}
+
+.all-stat td {
+  color: white;
+  font-size: 21px !important;
+  font-weight: 800;
+}
+
+.show_all_content_wrapper
+  .v-data-table
+  .v-data-table__wrapper
+  table
+  tbody
+  tr:hover {
+  background: var(--main_theme_clr) !important;
+  text-align: center;
+}
+
+table,
+tbody,
+tr,
+td {
+  text-align: center !important;
+}
+
+.excel {
+  background: darkgreen;
+  padding: 7px 10px;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+}
+</style>

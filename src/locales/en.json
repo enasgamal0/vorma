@@ -1268,6 +1268,7 @@
   },
 
   "PLACEHOLDERS": {
+    "users_list": "List of Users that are in",
     "people_number": "Number of people in the place",
     "people_with_activity": "Number of people engaged in sports activity inside the place",
     "places_report": "Sports places interaction reports",
@@ -2517,6 +2518,7 @@
   },
 
   "MESSAGES": {
+    "generatingNow": "Generating PDF Now",
     "excel_success": "Influencer Data has been imported successfully",
     "uploadedSuccessfully": "The File has been Uploaded Successfully",
     "uploadFailed": "An Error occurred while Uploading the File, Please Try Again",

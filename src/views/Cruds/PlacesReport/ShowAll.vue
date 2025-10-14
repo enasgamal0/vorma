@@ -116,6 +116,10 @@
         </template>
         <!-- Start:: No Data State -->
 
+        <template v-slot:[`item.people_number`]="{ item }">
+          <a :href="`/places_users/all/${item.id}?place_ar=${item?.trans?.name?.ar}&place_en=${item?.trans?.name?.en}`" class="text-decoration-underline">{{ item.people_number }}</a>
+        </template>
+
         <!-- Start:: Activation -->
         <template v-slot:[`item.is_active`]="{ item }">
           <!-- v-if="permissions.activate" -->
@@ -245,14 +249,71 @@
       </div>
     </template>
     <!-- End:: Pagination -->
+     <!-- Start:: Generate PDF Template Content -->
+  <vue-html2pdf
+    :show-layout="false"
+    :float-layout="true"
+    :enable-download="true"
+    :preview-modal="true"
+    :filename="$t('PLACEHOLDERS.auctions_report')"
+    :pdf-quality="2"
+    pdf-format="a4"
+    :manual-pagination="false"
+    :paginate-elements-by-height="1400"
+    pdf-content-width="100%"
+    @hasGenerated="$message.success($t('MESSAGES.generatedSuccessfully'))"
+    ref="html2Pdf"
+  >
+    <section slot="pdf-content">
+      <div class="pdf_file_content">
+        <h3 class="file_title">
+          {{ $t("PLACEHOLDERS.auctions_report") }}
+        </h3>
+        <!-- ==== Start:: Overall_statistics Addresses ==== -->
+        <div class="table_content mt-5">
+          <v-simple-table class="pdf-table">
+            <thead>
+              <tr>
+                <th
+                  v-for="header in tableHeaders"
+                  :key="header.value"
+                  style="text-align: center"
+                >
+                  {{ header.text }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, index) in allRowsForPdf" :key="row.id">
+                <td>{{ index + 1 }}</td>
+                <td>{{ row.name }}</td>
+                <td>{{ row.city?.name }}</td>
+                <td>{{ row.type_trans }}</td>
+                <td>{{ row.people_number }}</td>
+                <td>{{ row.people_with_activity }}</td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+        </div>
+        <!-- ==== End:: Overall_statistics Addresses ==== -->
+      </div>
+    </section>
+  </vue-html2pdf>
+  <!-- End:: Generate PDF Template Content -->
   </div>
+  
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import VueHtml2pdf from "vue-html2pdf";
 
 export default {
   name: "AllPlaces",
+
+  components: {
+    VueHtml2pdf,
+  },
 
   computed: {
     ...mapGetters({
@@ -291,6 +352,7 @@ export default {
   data() {
     return {
       cities: [],
+      allRowsForPdf: [],
       // Start:: Loading Data
       loading: false,
       isWaitingRequest: false,
@@ -385,7 +447,10 @@ export default {
     // Start:: Handel Filter
     async submitFilterForm() {
       if (this.$route.query.page !== "1") {
-        await this.$router.push({ path: "/places_report/all", query: { page: 1 } });
+        await this.$router.push({
+          path: "/places_report/all",
+          query: { page: 1 },
+        });
       }
       this.setTableRows();
     },
@@ -395,7 +460,10 @@ export default {
       this.filterOptions.type = null;
 
       if (this.$route.query.page !== "1") {
-        await this.$router.push({ path: "/places_report/all", query: { page: 1 } });
+        await this.$router.push({
+          path: "/places_report/all",
+          query: { page: 1 },
+        });
       }
       this.setTableRows();
     },
@@ -515,11 +583,36 @@ export default {
       }
     },
     // ==================== End:: Crud ====================
-    downloadPdf() {
-      console.log("Download Pdf");
+    async downloadPdf() {
+      try {
+        this.$message.loading(this.$t("MESSAGES.generatingNow"));
+
+        const res = await this.$axios({
+          method: "GET",
+          url: "places",
+          params: {
+            page: 0,
+            limit: 0,
+            from: this.filterOptions.from,
+            to: this.filterOptions.to,
+            type: this.filterOptions.type?.id,
+          },
+        });
+
+        this.allRowsForPdf = res.data.data.data;
+
+        await this.$nextTick();
+        await this.$refs.html2Pdf.generatePdf();
+      } catch (err) {
+        console.error(err);
+        this.$message.error(this.$t("MESSAGES.errorHappened"));
+      }
     },
     downloadExcelAllData() {
-      console.log("Download Excel");
+      window.open(
+        "https://backend.vorma.moltaqadev.com/export-places",
+        "_blank"
+      );
     },
   },
 
@@ -549,5 +642,31 @@ button:disabled {
   opacity: 0.4;
   background-color: transparent;
   color: #a1a1a1;
+}
+.pdf_file_content {
+  padding: 20px;
+  font-family: "Cairo", sans-serif;
+
+  .pdf-table {
+    width: 100%;
+    border-collapse: collapse;
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+    }
+    th {
+      background: #814686;
+      color: #fff;
+    }
+  }
+
+  .file_title {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #814686;
+  }
 }
 </style>

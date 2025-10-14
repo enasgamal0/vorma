@@ -332,6 +332,11 @@ import AllClients from "../views/Cruds/Clients/ShowAll.vue";
 import ShowClients from "../views/Cruds/Clients/Show.vue";
 // ================= End:: Clients Routes
 
+// ================== Start:: PlacesUsers Routes
+import PlacesUsersHome from "../views/Cruds/PlacesUsers/Home.vue";
+import AllPlacesUsers from "../views/Cruds/PlacesUsers/ShowAll.vue";
+// ================= End:: PlacesUsers Routes
+
 // ================== Start:: Providers Routes
 import ProvidersHome from "../views/Cruds/Providers/Home.vue";
 import AllProviders from "../views/Cruds/Providers/ShowAll.vue";
@@ -1654,6 +1659,31 @@ const routes = [
         ],
       },
       // End:: places Report Config
+
+      // Start:: places Users Config
+      {
+        path: "/places_users",
+        name: "places_users",
+        component: PlacesUsersHome,
+        meta: {
+          middleware: [auth],
+        },
+        children: [
+          {
+            path: "all/:id",
+            name: "places_users",
+            component: AllPlacesUsers,
+            meta: {
+              middleware: [auth],
+              requiresPermission: {
+                action: "places index",
+                subject: "places",
+              },
+            },
+          },
+        ],
+      },
+      // End:: places Users Config
 
       // Start:: Sectors Config
       {
