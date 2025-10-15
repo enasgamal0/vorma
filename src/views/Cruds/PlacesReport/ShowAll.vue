@@ -117,7 +117,16 @@
         <!-- Start:: No Data State -->
 
         <template v-slot:[`item.people_number`]="{ item }">
-          <a :href="`/places_users/all/${item.id}?place_ar=${item?.trans?.name?.ar}&place_en=${item?.trans?.name?.en}`" class="text-decoration-underline">{{ item.people_number }}</a>
+          <a
+            v-if="item.people_number > 0"
+            :href="`/dashboard/places_users/all/${item.id}?place_ar=${item?.trans?.name?.ar}&place_en=${item?.trans?.name?.en}`"
+            class="text-decoration-underline"
+          >
+            {{ item.people_number }}
+          </a>
+          <div v-else>
+            {{ item.people_number }}
+          </div>
         </template>
 
         <!-- Start:: Activation -->
@@ -249,59 +258,58 @@
       </div>
     </template>
     <!-- End:: Pagination -->
-     <!-- Start:: Generate PDF Template Content -->
-  <vue-html2pdf
-    :show-layout="false"
-    :float-layout="true"
-    :enable-download="true"
-    :preview-modal="true"
-    :filename="$t('PLACEHOLDERS.auctions_report')"
-    :pdf-quality="2"
-    pdf-format="a4"
-    :manual-pagination="false"
-    :paginate-elements-by-height="1400"
-    pdf-content-width="100%"
-    @hasGenerated="$message.success($t('MESSAGES.generatedSuccessfully'))"
-    ref="html2Pdf"
-  >
-    <section slot="pdf-content">
-      <div class="pdf_file_content">
-        <h3 class="file_title">
-          {{ $t("PLACEHOLDERS.auctions_report") }}
-        </h3>
-        <!-- ==== Start:: Overall_statistics Addresses ==== -->
-        <div class="table_content mt-5">
-          <v-simple-table class="pdf-table">
-            <thead>
-              <tr>
-                <th
-                  v-for="header in tableHeaders"
-                  :key="header.value"
-                  style="text-align: center"
-                >
-                  {{ header.text }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, index) in allRowsForPdf" :key="row.id">
-                <td>{{ index + 1 }}</td>
-                <td>{{ row.name }}</td>
-                <td>{{ row.city?.name }}</td>
-                <td>{{ row.type_trans }}</td>
-                <td>{{ row.people_number }}</td>
-                <td>{{ row.people_with_activity }}</td>
-              </tr>
-            </tbody>
-          </v-simple-table>
+    <!-- Start:: Generate PDF Template Content -->
+    <vue-html2pdf
+      :show-layout="false"
+      :float-layout="true"
+      :enable-download="true"
+      :preview-modal="true"
+      :filename="$t('PLACEHOLDERS.auctions_report')"
+      :pdf-quality="2"
+      pdf-format="a4"
+      :manual-pagination="false"
+      :paginate-elements-by-height="1400"
+      pdf-content-width="100%"
+      @hasGenerated="$message.success($t('MESSAGES.generatedSuccessfully'))"
+      ref="html2Pdf"
+    >
+      <section slot="pdf-content">
+        <div class="pdf_file_content">
+          <h3 class="file_title">
+            {{ $t("PLACEHOLDERS.auctions_report") }}
+          </h3>
+          <!-- ==== Start:: Overall_statistics Addresses ==== -->
+          <div class="table_content mt-5">
+            <v-simple-table class="pdf-table">
+              <thead>
+                <tr>
+                  <th
+                    v-for="header in tableHeaders"
+                    :key="header.value"
+                    style="text-align: center"
+                  >
+                    {{ header.text }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row, index) in allRowsForPdf" :key="row.id">
+                  <td>{{ index + 1 }}</td>
+                  <td>{{ row.name }}</td>
+                  <td>{{ row.city?.name }}</td>
+                  <td>{{ row.type_trans }}</td>
+                  <td>{{ row.people_number }}</td>
+                  <td>{{ row.people_with_activity }}</td>
+                </tr>
+              </tbody>
+            </v-simple-table>
+          </div>
+          <!-- ==== End:: Overall_statistics Addresses ==== -->
         </div>
-        <!-- ==== End:: Overall_statistics Addresses ==== -->
-      </div>
-    </section>
-  </vue-html2pdf>
-  <!-- End:: Generate PDF Template Content -->
+      </section>
+    </vue-html2pdf>
+    <!-- End:: Generate PDF Template Content -->
   </div>
-  
 </template>
 
 <script>

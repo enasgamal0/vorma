@@ -482,16 +482,24 @@ export default {
     },
 
     onFileSelect(files) {
-      if (files.length > 5) {
-        this.$message.warning(this.$t("VALIDATION.max_5_images"));
-        // Take only first 5 images
-        this.additionalImages = Array.from(files).slice(0, 5);
-        // Update URLs to show only first 5
-        // this.imgUrls = this.additionalImages.map(file => URL.createObjectURL(file));
-      } else {
-        this.additionalImages = files;
-      }
-    },
+  const newFiles = Array.from(files);
+
+  // دمج الصور الجديدة مع القديمة
+  const allFiles = [...this.additionalImages, ...newFiles];
+
+  if (allFiles.length > 5) {
+    this.$message.warning(this.$t("VALIDATION.max_5_images"));
+    // ناخد أول 5 بس
+    this.additionalImages = allFiles.slice(0, 5);
+  } else {
+    this.additionalImages = allFiles;
+  }
+
+  // نحدّث الـ preview URLs كمان
+  this.imgUrls = this.additionalImages.map(file => URL.createObjectURL(file));
+},
+
+
 
     onFileRemove(index) {
       this.additionalImages.splice(index, 1);
