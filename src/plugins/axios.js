@@ -8,7 +8,7 @@ const USER_TOKEN =
 const CURRENT_LANG = store.getters["AppLangModule/getAppLocale"] || 'ar';
 
 // Global headers
-// https://backend.vorma.net
+// https://backend.vorma.moltaqadev.com
 axios.defaults.baseURL =
   "https://backend.vorma.moltaqadev.com/dashboard-api/v1/";
 
