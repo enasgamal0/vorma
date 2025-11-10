@@ -89,7 +89,7 @@
           <!-- End:: Description Input -->
 
           <!-- Start:: Activities Checkboxes -->
-          <div class="col-12 my-4">
+          <div class="col-12 my-4" v-if="data.type?.id === 'sport'">
             <h5 style="color: #814686">
               {{ $t("PLACEHOLDERS.activities") }}
               <span style="color: #e63757">*</span>
@@ -234,11 +234,34 @@
               {{ $t("PLACEHOLDERS.working_hours") }}
               <span style="color: #e63757">*</span>
             </h5>
+            <div class="form-check form-switch mb-3 toggle_switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="edit-all-day-all-week"
+                v-model="isAllDayAllWeek"
+              />
+              <label
+                class="form-check-label mx-5 px-3"
+                style="color: #814686"
+                for="edit-all-day-all-week"
+              >
+                {{ $t("PLACEHOLDERS.open_24_hours") }}
+              </label>
+            </div>
             <div
-              class="row my-3"
-              v-for="(workingHour, index) in data.workingHours"
-              :key="'hour' + index"
+              v-if="isAllDayAllWeek"
+              class="mb-3"
+              style="color: #814686; font-weight: 500"
             >
+              {{ $t("PLACEHOLDERS.open_24_hours_note") }}
+            </div>
+            <template v-else>
+              <div
+                class="row my-3"
+                v-for="(workingHour, index) in data.workingHours"
+                :key="'hour' + index"
+              >
               <div class="col-12 mb-2">
                 <label
                   style="font-size: 16px; color: #814686"
@@ -253,7 +276,7 @@
                 v-model="workingHour.day"
                 required
               />
-              <div class="col-3">
+              <div class="col-6 col-md-3">
                 <base-input
                   type="time"
                   :placeholder="$t('PLACEHOLDERS.from')"
@@ -261,7 +284,7 @@
                   required
                 />
               </div>
-              <div class="col-3">
+              <div class="col-6 col-md-3">
                 <base-input
                   type="time"
                   :placeholder="$t('PLACEHOLDERS.to')"
@@ -289,6 +312,7 @@
                 v-if="index < data.workingHours.length - 1"
               />
             </div>
+            </template>
           </div>
           <!-- End:: Working Hours Section -->
 
@@ -357,6 +381,9 @@ export default {
       existingImages: [],
       placeId: null,
 
+      isAllDayAllWeek: false,
+      loadedWithAllWeek: false,
+
       data: {
         nameAr: null,
         nameEn: null,
@@ -415,6 +442,21 @@ export default {
           name: this.$t("PLACEHOLDERS.entertainment"),
         },
       ];
+    },
+  },
+
+  watch: {
+    isAllDayAllWeek(newVal, oldVal) {
+      if (oldVal && !newVal && this.loadedWithAllWeek) {
+        this.data.workingHours = [
+          {
+            day: null,
+            from: null,
+            to: null,
+          },
+        ];
+        this.loadedWithAllWeek = false;
+      }
     },
   },
 
@@ -490,6 +532,7 @@ export default {
 
         // Working Hours
         if (place.working_hours && place.working_hours.length > 0) {
+          this.isAllDayAllWeek = this.isAllWeekSchedule(place.working_hours);
           this.data.workingHours = place.working_hours.map((wh) => ({
             day: this.allDays.find((day) => day.id === wh.day),
             from: wh.from,
@@ -504,6 +547,8 @@ export default {
             lng: parseFloat(point.long),
           }));
         }
+
+        this.loadedWithAllWeek = this.isAllDayAllWeek;
 
         this.isLoadingData = false;
       } catch (error) {
@@ -524,6 +569,7 @@ export default {
     },
 
     addWorkingHour() {
+      if (this.isAllDayAllWeek) return;
       this.data.workingHours.push({
         day: null,
         from: null,
@@ -555,6 +601,27 @@ export default {
 
     removeService(index) {
       this.data.services.splice(index, 1);
+    },
+
+    isAllWeekSchedule(workingHours = []) {
+      if (!workingHours.length || workingHours.length !== this.allDays.length) {
+        return false;
+      }
+
+      return this.allDays.every((day) => {
+        const dayEntry = workingHours.find((wh) => wh.day === day.id);
+        if (!dayEntry) {
+          return false;
+        }
+        const from = this.normalizeTime(dayEntry.from);
+        const to = this.normalizeTime(dayEntry.to);
+        return from === "00:00" && (to === "23:59" || to === "24:00");
+      });
+    },
+
+    normalizeTime(time) {
+      if (!time) return null;
+      return time.slice(0, 5);
     },
 
     onFileSelect(files) {
@@ -656,10 +723,12 @@ export default {
         REQUEST_DATA.append("city_id", this.data.cityId?.id);
       }
 
-      // Activities
-      this.data.selectedActivities.forEach((activityId) => {
-        REQUEST_DATA.append("activities[]", activityId);
-      });
+      // Activities (Only for sport type)
+      if (this.data.type?.id == "sport") {
+        this.data.selectedActivities.forEach((activityId) => {
+          REQUEST_DATA.append("activities[]", activityId);
+        });
+      }
 
       // Sports (Only for sport type)
       if (this.data.type?.id == "sport") {
@@ -683,25 +752,42 @@ export default {
         }
       });
 
-      // Working Hours (Only rows with selected day)
-      let workingHourIndex = 0;
-      this.data.workingHours.forEach((workingHour) => {
-        if (workingHour.day && workingHour.from && workingHour.to) {
+      // Working Hours
+      if (this.isAllDayAllWeek) {
+        this.allDays.forEach((day, index) => {
           REQUEST_DATA.append(
-            `working_hours[${workingHourIndex}][day]`,
-            workingHour.day.id
+            `working_hours[${index}][day]`,
+            day.id
           );
           REQUEST_DATA.append(
-            `working_hours[${workingHourIndex}][from]`,
-            workingHour.from
+            `working_hours[${index}][from]`,
+            "00:00"
           );
           REQUEST_DATA.append(
-            `working_hours[${workingHourIndex}][to]`,
-            workingHour.to
+            `working_hours[${index}][to]`,
+            "23:59"
           );
-          workingHourIndex++;
-        }
-      });
+        });
+      } else {
+        let workingHourIndex = 0;
+        this.data.workingHours.forEach((workingHour) => {
+          if (workingHour.day && workingHour.from && workingHour.to) {
+            REQUEST_DATA.append(
+              `working_hours[${workingHourIndex}][day]`,
+              workingHour.day.id
+            );
+            REQUEST_DATA.append(
+              `working_hours[${workingHourIndex}][from]`,
+              workingHour.from
+            );
+            REQUEST_DATA.append(
+              `working_hours[${workingHourIndex}][to]`,
+              workingHour.to
+            );
+            workingHourIndex++;
+          }
+        });
+      }
 
       // Location Points
       this.data.points?.forEach((point, index) => {
@@ -753,4 +839,39 @@ export default {
   cursor: pointer;
   margin: auto !important;
 }
+
+.toggle_switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+:deep(.toggle_switch .form-check-input) {
+  width: 3.2rem;
+  height: 1.6rem;
+  cursor: pointer;
+  border: 1px solid #814686;
+  background-color: #f6f0fa;
+  transition: all 0.2s ease-in-out;
+}
+
+:deep(.toggle_switch .form-check-input:focus) {
+  box-shadow: 0 0 0 0.15rem rgba(129, 70, 134, 0.3);
+}
+
+:deep(.toggle_switch .form-check-input:checked) {
+  background-color: #814686;
+  border-color: #814686;
+}
+
+:deep(.toggle_switch .form-check-input::before) {
+  background-color: #fff;
+}
+
+:deep(.toggle_switch .form-check-label) {
+  margin: 0;
+  color: #814686;
+  font-weight: 500;
+}
+
 </style>

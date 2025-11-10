@@ -88,7 +88,7 @@
           <!-- End:: Description Input -->
 
           <!-- Start:: Activities Checkboxes -->
-          <div class="col-12 my-4">
+          <div class="col-12 my-4" v-if="data.type?.id === 'sport'">
             <h5 style="color: #814686">
               {{ $t("PLACEHOLDERS.activities") }}
             </h5>
@@ -203,10 +203,18 @@
               {{ $t("PLACEHOLDERS.working_hours") }}
             </h5>
             <div
-              class="row my-3"
-              v-for="(workingHour, index) in data.workingHours"
-              :key="'hour' + index"
+              v-if="isAllDayAllWeek"
+              class="mb-3"
+              style="color: #814686; font-weight: 500"
             >
+              {{ $t("PLACEHOLDERS.open_24_hours_note") }}
+            </div>
+            <template v-else>
+              <div
+                class="row my-3"
+                v-for="(workingHour, index) in data.workingHours"
+                :key="'hour' + index"
+              >
               <div class="col-12 mb-2">
                 <label
                   style="font-size: 16px; color: #814686"
@@ -243,6 +251,7 @@
                 v-if="index < data.workingHours.length - 1"
               />
             </div>
+            </template>
           </div>
           <!-- End:: Working Hours Section -->
 
@@ -303,6 +312,8 @@ export default {
       imgUrls: [],
       existingImages: [],
       placeId: null,
+
+      isAllDayAllWeek: false,
 
       data: {
         nameAr: null,
@@ -422,6 +433,7 @@ export default {
 
         // Working Hours
         if (place.working_hours && place.working_hours.length > 0) {
+          this.isAllDayAllWeek = this.isAllWeekSchedule(place.working_hours);
           this.data.workingHours = place.working_hours.map((wh) => ({
             day: this.allDays.find((day) => day.id === wh.day),
             from: wh.from,
@@ -487,6 +499,27 @@ export default {
 
     removeService(index) {
       this.data.services.splice(index, 1);
+    },
+
+    isAllWeekSchedule(workingHours = []) {
+      if (!workingHours.length || workingHours.length !== this.allDays.length) {
+        return false;
+      }
+
+      return this.allDays.every((day) => {
+        const dayEntry = workingHours.find((wh) => wh.day === day.id);
+        if (!dayEntry) {
+          return false;
+        }
+        const from = this.normalizeTime(dayEntry.from);
+        const to = this.normalizeTime(dayEntry.to);
+        return from === "00:00" && (to === "23:59" || to === "24:00");
+      });
+    },
+
+    normalizeTime(time) {
+      if (!time) return null;
+      return time.slice(0, 5);
     },
 
     onFileSelect(files) {

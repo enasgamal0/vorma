@@ -2,18 +2,18 @@
   <footer>
     <!-- Start:: Copyrights -->
     <p class="copy_rights">
-      {{ $t("TITLES.copyRights", { year: currentYear }) }}
+      {{ $t("TITLES.copyRightsVorma", { year: currentYear }) }}
     </p>
     <!-- End:: Copyrights -->
 
     <!-- Start:: Company Signature -->
-    <a
+    <!-- <a
       href="https://www.moltaqa.net/?fbclid=IwAR282W4sahp39VYd53v_iyBp_hyKtKihCOfmkhjOWA-fWKfdq8hdQvGr6cY"
       target="_blank"
       class="company_signature"
     >
       {{ $t("TITLES.madeWithLove") }}
-    </a>
+    </a> -->
     <!-- End:: Company Signature -->
   </footer>
 </template>

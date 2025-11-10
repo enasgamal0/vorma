@@ -82,7 +82,7 @@
           <!-- End:: Description Input -->
 
           <!-- Start:: Activities Checkboxes -->
-          <div class="col-12 my-4">
+          <div class="col-12 my-4" v-if="data.type?.id === 'sport'">
             <h5 style="color: #814686">
               {{ $t("PLACEHOLDERS.activities") }}
               <span style="color: #e63757">*</span>
@@ -227,11 +227,34 @@
               {{ $t("PLACEHOLDERS.working_hours") }}
               <span style="color: #e63757">*</span>
             </h5>
+            <div class="form-check form-switch mb-3 toggle_switch">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="create-all-day-all-week"
+                v-model="isAllDayAllWeek"
+              />
+              <label
+                class="form-check-label mx-5 px-3"
+                style="color: #814686"
+                for="create-all-day-all-week"
+              >
+                {{ $t("PLACEHOLDERS.open_24_hours") }}
+              </label>
+            </div>
             <div
-              class="row my-3"
-              v-for="(workingHour, index) in data.workingHours"
-              :key="'hour' + index"
+              v-if="isAllDayAllWeek"
+              class="mb-3"
+              style="color: #814686; font-weight: 500"
             >
+              {{ $t("PLACEHOLDERS.open_24_hours_note") }}
+            </div>
+            <template v-else>
+              <div
+                class="row my-3"
+                v-for="(workingHour, index) in data.workingHours"
+                :key="'hour' + index"
+              >
               <div class="col-12 mb-2">
                 <label
                   style="font-size: 16px; color: #814686"
@@ -246,7 +269,7 @@
                 v-model="workingHour.day"
                 required
               />
-              <div class="col-3">
+              <div class="col-6 col-md-3">
                 <base-input
                   type="time"
                   :placeholder="$t('PLACEHOLDERS.from')"
@@ -254,7 +277,7 @@
                   required
                 />
               </div>
-              <div class="col-3">
+              <div class="col-6 col-md-3">
                 <base-input
                   type="time"
                   :placeholder="$t('PLACEHOLDERS.to')"
@@ -282,6 +305,7 @@
                 v-if="index < data.workingHours.length - 1"
               />
             </div>
+            </template>
           </div>
           <!-- End:: Working Hours Section -->
 
@@ -346,6 +370,8 @@ export default {
       isWaitingRequest: false,
       additionalImages: [],
       imgUrls: [],
+
+      isAllDayAllWeek: false,
 
       data: {
         nameAr: null,
@@ -437,6 +463,7 @@ export default {
     },
 
     addWorkingHour() {
+      if (this.isAllDayAllWeek) return;
       this.data.workingHours.push({
         day: null,
         from: null,
@@ -553,10 +580,12 @@ export default {
         REQUEST_DATA.append("city_id", this.data.cityId?.id);
       }
 
-      // Activities
-      this.data.selectedActivities.forEach((activityId) => {
-        REQUEST_DATA.append("activities[]", activityId);
-      });
+      // Activities (Only for sport type)
+      if (this.data.type?.id == "sport") {
+        this.data.selectedActivities.forEach((activityId) => {
+          REQUEST_DATA.append("activities[]", activityId);
+        });
+      }
 
       // Sports (Only for sport type)
       if (this.data.type?.id == "sport") {
@@ -581,24 +610,41 @@ export default {
       });
 
       // Working Hours (Only rows with selected day)
-      let workingHourIndex = 0;
-      this.data.workingHours.forEach((workingHour) => {
-        if (workingHour.day && workingHour.from && workingHour.to) {
+      if (this.isAllDayAllWeek) {
+        this.allDays.forEach((day, index) => {
           REQUEST_DATA.append(
-            `working_hours[${workingHourIndex}][day]`,
-            workingHour.day.id
+            `working_hours[${index}][day]`,
+            day.id
           );
           REQUEST_DATA.append(
-            `working_hours[${workingHourIndex}][from]`,
-            workingHour.from
+            `working_hours[${index}][from]`,
+            "00:00"
           );
           REQUEST_DATA.append(
-            `working_hours[${workingHourIndex}][to]`,
-            workingHour.to
+            `working_hours[${index}][to]`,
+            "23:59"
           );
-          workingHourIndex++;
-        }
-      });
+        });
+      } else {
+        let workingHourIndex = 0;
+        this.data.workingHours.forEach((workingHour) => {
+          if (workingHour.day && workingHour.from && workingHour.to) {
+            REQUEST_DATA.append(
+              `working_hours[${workingHourIndex}][day]`,
+              workingHour.day.id
+            );
+            REQUEST_DATA.append(
+              `working_hours[${workingHourIndex}][from]`,
+              workingHour.from
+            );
+            REQUEST_DATA.append(
+              `working_hours[${workingHourIndex}][to]`,
+              workingHour.to
+            );
+            workingHourIndex++;
+          }
+        });
+      }
 
       // Location Points
       this.data.points?.forEach((point, index) => {
@@ -650,4 +696,39 @@ export default {
   cursor: pointer;
   margin: auto !important;
 }
+
+.toggle_switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+:deep(.toggle_switch .form-check-input) {
+  width: 3.2rem;
+  height: 1.6rem;
+  cursor: pointer;
+  border: 1px solid #814686;
+  background-color: #f6f0fa;
+  transition: all 0.2s ease-in-out;
+}
+
+:deep(.toggle_switch .form-check-input:focus) {
+  box-shadow: 0 0 0 0.15rem rgba(129, 70, 134, 0.3);
+}
+
+:deep(.toggle_switch .form-check-input:checked) {
+  background-color: #814686;
+  border-color: #814686;
+}
+
+:deep(.toggle_switch .form-check-input::before) {
+  background-color: #fff;
+}
+
+:deep(.toggle_switch .form-check-label) {
+  margin: 0;
+  color: #814686;
+  font-weight: 500;
+}
+
 </style>
