@@ -23,6 +23,7 @@ import "./plugins/googleMaps";
 import "./plugins/formComponents";
 import "./plugins/globalComponents";
 import "./plugins/3rdPartyLibraries";
+import initAutoLogout from "./plugins/autoLogout";
 
 import firebase from "firebase/app";
 import "firebase/firebase-messaging";
@@ -99,6 +100,10 @@ Sentry.init({
 Vue.use(Antd);
 Vue.prototype.$axios = axios;
 Vue.config.productionTip = false;
+
+// Initialize auto logout handlers
+initAutoLogout();
+
 new Vue({
   router,
   store,

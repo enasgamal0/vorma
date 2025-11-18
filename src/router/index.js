@@ -1,6 +1,7 @@
 // Start:: Importing Middleware
 import auth from "../middleware/auth.js";
 import Authentication from "../pages/Authentication.vue";
+import { markNavigation } from "../plugins/autoLogout";
 // End:: Importing Middleware
 
 // Start:: Importing Router Components
@@ -3211,6 +3212,9 @@ function nextFactory(context, middleware, index) {
 
 // Authentication and Permission Check Middleware
 router.beforeEach((to, from, next) => {
+  // Mark navigation to prevent false logout on route changes
+  markNavigation();
+  
   const isAuthenticated = localStorage.getItem(
     "vorma_admin_dashboard_user_token"
   );
