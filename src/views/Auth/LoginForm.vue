@@ -63,7 +63,7 @@
 import firebase from "firebase/app";
 import "firebase/messaging";
 import { mapGetters, mapActions } from "vuex";
-import { markNavigation } from "../../plugins/autoLogout";
+// import { markNavigation } from "../../plugins/autoLogout";
 
 export default {
   name: "LoginForm",
@@ -160,7 +160,7 @@ export default {
         this.$message.success(this.$t("VALIDATION.loginSuccess"));
         this.clearFormInputs();
         // Mark navigation before reload to prevent auto-logout
-        markNavigation();
+        // markNavigation();
         this.$router.replace("/home");
         location.reload();
       } catch (error) {

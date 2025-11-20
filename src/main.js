@@ -23,7 +23,7 @@ import "./plugins/googleMaps";
 import "./plugins/formComponents";
 import "./plugins/globalComponents";
 import "./plugins/3rdPartyLibraries";
-import initAutoLogout from "./plugins/autoLogout";
+// import initAutoLogout from "./plugins/autoLogout";
 
 import firebase from "firebase/app";
 import "firebase/firebase-messaging";
@@ -102,7 +102,7 @@ Vue.prototype.$axios = axios;
 Vue.config.productionTip = false;
 
 // Initialize auto logout handlers
-initAutoLogout();
+// initAutoLogout();
 
 new Vue({
   router,
