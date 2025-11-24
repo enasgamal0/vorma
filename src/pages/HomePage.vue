@@ -11,7 +11,7 @@
       <!--  =========== End:: Table Title =========== -->
 
       <!--  =========== Start:: Data Table =========== -->
-      <div class="statics mt-4" v-if="statics && statics?.length">
+      <div class="statics mt-4" v-if="statics && Object.keys(statics).length > 0">
         <div class="row">
           <div
             class="col-lg-6 col-md-6 col-12"
@@ -21,24 +21,42 @@
             <div class="box">
               <div class="icon">
                 <i
-                  v-if="key === 'website_clients'"
+                  v-if="key === 'users'"
                   class="fas fa-users"
                 ></i>
 
                 <i
-                  v-else-if="key === 'website_influencers'"
-                  class="fas fa-users"
+                  v-else-if="key === 'sport_places'"
+                  class="fas fa-dumbbell"
+                ></i>
+
+                <i
+                  v-else-if="key === 'entertainment_places'"
+                  class="fas fa-theater-masks"
+                ></i>
+
+                <i
+                  v-else-if="key === 'sessions'"
+                  class="fas fa-calendar-check"
                 ></i>
 
               </div>
 
               <div class="info_box">
-                <span v-if="key === 'website_clients'">{{
-                  $t("PLACEHOLDERS.website_clients")
+                <span v-if="key === 'users'">{{
+                  $t("PLACEHOLDERS.total_users")
                 }}</span>
 
-                <span v-else-if="key === 'website_influencers'">{{
-                  $t("PLACEHOLDERS.website_influencers")
+                <span v-else-if="key === 'sport_places'">{{
+                  $t("PLACEHOLDERS.sport_places_count")
+                }}</span>
+
+                <span v-else-if="key === 'entertainment_places'">{{
+                  $t("PLACEHOLDERS.entertainment_places_count")
+                }}</span>
+
+                <span v-else-if="key === 'sessions'">{{
+                  $t("PLACEHOLDERS.sessions_count")
                 }}</span>
                 <p class="number_box">{{ value }}</p>
               </div>
@@ -65,7 +83,7 @@ export default {
 
   data() {
     return {
-      statics: [],
+      statics: null,
     };
   },
 
@@ -76,10 +94,12 @@ export default {
           method: "GET",
           url: "statistic",
         });
-
+        console.log(res.data.data);
         this.statics = {
-          website_clients: res.data.data.website_clients,
-          website_influencers: res.data.data.website_influencers,
+          users: res.data.data.users,
+          sport_places: res.data.data.sport_places,
+          entertainment_places: res.data.data.entertainment_places,
+          sessions: res.data.data.sessions,
         };
       } catch (error) {
         this.loading = false;
@@ -89,7 +109,7 @@ export default {
   },
 
   mounted() {
-    // this.getStatics();
+    this.getStatics();
   },
 };
 </script>

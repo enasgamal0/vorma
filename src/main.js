@@ -4,6 +4,15 @@ import router from "./router";
 import store from "./store";
 import "./registerServiceWorker";
 
+// Set refresh flag immediately to prevent logout on page refresh
+// This must be set before any other code runs
+if (typeof sessionStorage !== "undefined") {
+  sessionStorage.setItem("vorma_admin_page_refresh_flag", "true");
+  setTimeout(() => {
+    sessionStorage.removeItem("vorma_admin_page_refresh_flag");
+  }, 2000);
+}
+
 // Start:: Importing Main Sass Styles File
 import "./assets/sass/main.scss";
 // End:: Importing Main Sass Styles File
@@ -23,7 +32,7 @@ import "./plugins/googleMaps";
 import "./plugins/formComponents";
 import "./plugins/globalComponents";
 import "./plugins/3rdPartyLibraries";
-// import initAutoLogout from "./plugins/autoLogout";
+import initAutoLogout from "./plugins/autoLogout";
 
 import firebase from "firebase/app";
 import "firebase/firebase-messaging";
@@ -102,7 +111,31 @@ Vue.prototype.$axios = axios;
 Vue.config.productionTip = false;
 
 // Initialize auto logout handlers
-// initAutoLogout();
+initAutoLogout();
+
+// Handle cross-tab logout
+// Listen for logout events from other tabs
+if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
+  window.addEventListener("storage", (event) => {
+    // Check if the logout event was triggered from another tab
+    if (event.key === "vorma_admin_logout_event" && event.newValue) {
+      // Clear all authentication data
+      sessionStorage.removeItem("vorma_admin_dashboard_user_id");
+      sessionStorage.removeItem("vorma_admin_dashboard_user_token");
+      sessionStorage.removeItem("vorma_admin_dashboard_userName");
+      sessionStorage.removeItem("vorma_admin_roles");
+      sessionStorage.removeItem("vorma_admin_dashboard_user_type");
+      sessionStorage.removeItem("vorma_admin_dashboard_email");
+      sessionStorage.removeItem("vorma_admin_dashboard_user_avatar");
+      sessionStorage.removeItem("vorma_admin_dashboard_user_ability");
+      
+      // Redirect to login page
+      router.replace("/");
+      // Reload to clear any cached state
+      location.reload();
+    }
+  });
+}
 
 new Vue({
   router,

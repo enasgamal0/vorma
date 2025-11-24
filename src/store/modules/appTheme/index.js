@@ -7,7 +7,7 @@ export default {
 
   state: {
     // START:: THEME DATA
-    vorma_admin_dashboard_theme: localStorage.getItem(
+    vorma_admin_dashboard_theme: sessionStorage.getItem(
       "vorma_admin_dashboard_theme"
     ),
     // END:: THEME DATA

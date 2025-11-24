@@ -1,7 +1,7 @@
 export default {
   // START:: SET APP THEME
   setAppTheme(context, payload) {
-    localStorage.setItem("vorma_admin_dashboard_theme", payload);
+    sessionStorage.setItem("vorma_admin_dashboard_theme", payload);
     context.commit("setAppTheme", payload);
   },
   // END:: SET APP THEME

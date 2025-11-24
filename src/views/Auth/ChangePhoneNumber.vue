@@ -129,7 +129,7 @@ export default {
       // END:: COUNTRIES KEYS MENU HANDLING DATA
 
       // START:: USER ID
-      userId: localStorage.getItem("elmo3lm_elmosa3d_user_id"),
+      userId: sessionStorage.getItem("elmo3lm_elmosa3d_user_id"),
       // END:: USER ID
 
       // START:: LOGIN DATA
@@ -192,8 +192,8 @@ export default {
         .post(`update_phone_after_register/${this.userId}`, theData, {
           headers: {
             Authorization:
-              "Bearer " + localStorage.getItem("elmo3lm_elmosa3d_user_token"),
-            "Accept-language": localStorage.getItem(
+              "Bearer " + sessionStorage.getItem("elmo3lm_elmosa3d_user_token"),
+            "Accept-language": sessionStorage.getItem(
               "elmo3lm_elmosa3d_app_lang"
             ),
             "cache-control": "no-cache",
@@ -212,16 +212,16 @@ export default {
           });
 
           // START:: LOCAL STORAGE SET REGISTERED USER DATA
-          localStorage.setItem(
+          sessionStorage.setItem(
             "elmo3lm_elmosa3d_registered_user_country_id",
             this.countriesData.selectedCountry.id
           );
-          localStorage.setItem(
+          sessionStorage.setItem(
             "elmo3lm_elmosa3d_registered_user_phone_and_key",
             this.countriesData.selectedCountry.key +
               this.changePhoneNumData.phone
           );
-          localStorage.setItem(
+          sessionStorage.setItem(
             "elmo3lm_elmosa3d_registered_user_phone",
             this.changePhoneNumData.phone
           );

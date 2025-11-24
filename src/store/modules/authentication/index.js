@@ -7,13 +7,13 @@ export default {
 
   state: {
     // START:: AUTHENTICATED USER DATA
-    userId: localStorage.getItem("vorma_admin_dashboard_user_id"),
-    userToken: localStorage.getItem("vorma_admin_dashboard_user_token"),
-    userType: localStorage.getItem("vorma_admin_dashboard_user_type"),
-    userName: localStorage.getItem("vorma_admin_dashboard_userName"),
-    email: localStorage.getItem("vorma_admin_dashboard_email"),
-    userAvatar: localStorage.getItem("vorma_admin_dashboard_user_avatar"),
-    ability: localStorage.getItem("vorma_admin_dashboard_user_ability"),
+    userId: sessionStorage.getItem("vorma_admin_dashboard_user_id"),
+    userToken: sessionStorage.getItem("vorma_admin_dashboard_user_token"),
+    userType: sessionStorage.getItem("vorma_admin_dashboard_user_type"),
+    userName: sessionStorage.getItem("vorma_admin_dashboard_userName"),
+    email: sessionStorage.getItem("vorma_admin_dashboard_email"),
+    userAvatar: sessionStorage.getItem("vorma_admin_dashboard_user_avatar"),
+    ability: sessionStorage.getItem("vorma_admin_dashboard_user_ability"),
     // END:: AUTHENTICATED USER DATA
   },
 

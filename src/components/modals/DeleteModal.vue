@@ -83,10 +83,10 @@ export default {
                         headers: {
                             Authorization:
                                 "Bearer " +
-                                localStorage.getItem(
+                                sessionStorage.getItem(
                                     "elmo3lm_elmosa3d_user_token"
                                 ),
-                            "Accept-language": localStorage.getItem(
+                            "Accept-language": sessionStorage.getItem(
                                 "elmo3lm_elmosa3d_app_lang"
                             ),
                             "cache-control": "no-cache",
@@ -110,10 +110,10 @@ export default {
                         headers: {
                             Authorization:
                                 "Bearer " +
-                                localStorage.getItem(
+                                sessionStorage.getItem(
                                     "elmo3lm_elmosa3d_user_token"
                                 ),
-                            "Accept-language": localStorage.getItem(
+                            "Accept-language": sessionStorage.getItem(
                                 "elmo3lm_elmosa3d_app_lang"
                             ),
                             "cache-control": "no-cache",

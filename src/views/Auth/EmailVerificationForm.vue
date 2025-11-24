@@ -169,7 +169,7 @@ export default {
       // Start:: Append Request Data
       REQUEST_DATA.append("email", this.getAuthenticatedUserData.email);
       // End:: Append Request Data
-      const token = localStorage.getItem(
+      const token = sessionStorage.getItem(
         "vorma_admin_dashboard_forget_pass_token"
       );
       try {
@@ -184,7 +184,7 @@ export default {
         this.timerCount = 60;
         this.countDown();
         this.$message.success(this.$t("MESSAGES.sentSuccessfully"));
-        localStorage.setItem(
+        sessionStorage.setItem(
           "vorma_admin_dashboard_verification_code",
           res.data.body.code
         );
@@ -222,7 +222,7 @@ export default {
       // Start:: Append Request Data
       this.$axios.defaults.headers.common["Authorization"] =
         "Bearer " +
-        localStorage.getItem("vorma_admin_dashboard_forget_pass_token");
+        sessionStorage.getItem("vorma_admin_dashboard_forget_pass_token");
       REQUEST_DATA.append(
         "code",
         this.firstNumber +
@@ -241,13 +241,13 @@ export default {
             data: REQUEST_DATA,
           });
           this.isWaitingRequest = false;
-          localStorage.setItem(
+          sessionStorage.setItem(
             "vorma_admin_dashboard_reset_pass_token",
             res.data.data.access_token
           );
           this.$message.success(this.$t("MESSAGES.verifiedSuccessfully"));
           this.clearFormInputs();
-          localStorage.removeItem("vorma_admin_dashboard_email");
+          sessionStorage.removeItem("vorma_admin_dashboard_email");
           this.$router.replace("/reset-password");
         } catch (error) {
           this.isWaitingRequest = false;

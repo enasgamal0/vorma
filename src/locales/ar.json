@@ -1401,6 +1401,10 @@
 
     "website_clients": "العدد الإجمالي لأعضاء الموقع المفعلين",
     "website_influencers": "العدد الإجمالى للمؤثرين المفعلين",
+    "total_users": "إجمالي عدد العملاء",
+    "sport_places_count": "عدد الأماكن الرياضية المضافة",
+    "entertainment_places_count": "عدد الأماكن الترفيهية المضافة",
+    "sessions_count": "عدد الجلسات الرياضية المنفذة",
     "hobbies": "الهوايات",
     "hobbies_management": "إدارة الهوايات",
     "addHobby": "إضافة هواية جديدة",

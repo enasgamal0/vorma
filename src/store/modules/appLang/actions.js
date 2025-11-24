@@ -5,7 +5,7 @@ import i18n from "../../../plugins/i18n";
 export default {
   // START:: SET APP LOCALE
   setAppLocale(context, payload) {
-    localStorage.setItem("vorma_admin_dashboard_language", payload);
+    sessionStorage.setItem("vorma_admin_dashboard_language", payload);
     context.commit("setAppLocale", payload);
   },
   // END:: SET APP LOCALE

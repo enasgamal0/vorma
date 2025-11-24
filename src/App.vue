@@ -8,6 +8,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import initAutoLogout from "./plugins/autoLogout";
 
 export default {
   name: "App",
@@ -43,6 +44,17 @@ export default {
     // End:: Vuex Actions
   },
 
+  watch: {
+    // Re-initialize auto logout when authentication state changes
+    getAuthenticatedUserData: {
+      handler() {
+        // Re-initialize auto logout when user logs in/out
+        initAutoLogout();
+      },
+      immediate: false,
+    },
+  },
+
   created() {
     // this.getData();
     this.readAllNotifications();
@@ -51,6 +63,9 @@ export default {
       console.log("message", event);
       this.readAllNotifications();
     });
+
+    // Initialize auto logout on app creation
+    initAutoLogout();
   },
 };
 </script>

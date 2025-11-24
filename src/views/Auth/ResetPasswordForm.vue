@@ -112,7 +112,7 @@ export default {
       this.isWaitingRequest = true;
       this.$axios.defaults.headers.common["Authorization"] =
         "Bearer " +
-        localStorage.getItem("vorma_admin_dashboard_forget_pass_token");
+        sessionStorage.getItem("vorma_admin_dashboard_forget_pass_token");
 
       const REQUEST_DATA = new FormData();
       // Start:: Append Request Data
@@ -122,7 +122,7 @@ export default {
         this.resetPasswordData.confirmPassword
       );
       // End:: Append Request Data
-      const token = localStorage.getItem(
+      const token = sessionStorage.getItem(
         "vorma_admin_dashboard_forget_pass_token"
       );
       try {
@@ -136,8 +136,8 @@ export default {
         });
         this.isWaitingRequest = false;
         this.$message.success(this.$t("MESSAGES.editedSuccessfully"));
-        localStorage.removeItem("vorma_admin_dashboard_forget_pass_token");
-        localStorage.removeItem("vorma_admin_dashboard_reset_pass_token");
+        sessionStorage.removeItem("vorma_admin_dashboard_forget_pass_token");
+        sessionStorage.removeItem("vorma_admin_dashboard_reset_pass_token");
         this.clearFormInputs();
         this.$router.replace("/");
       } catch (error) {

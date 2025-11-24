@@ -63,7 +63,7 @@
 import firebase from "firebase/app";
 import "firebase/messaging";
 import { mapGetters, mapActions } from "vuex";
-// import { markNavigation } from "../../plugins/autoLogout";
+import { markNavigation } from "../../plugins/autoLogout";
 
 export default {
   name: "LoginForm",
@@ -142,12 +142,12 @@ export default {
           data: REQUEST_DATA,
         });
         this.isWaitingRequest = false;
-        localStorage.setItem(
+        sessionStorage.setItem(
           "vorma_admin_roles",
           JSON.stringify(res.data.data.user)
         );
 
-        console.log(JSON.parse(localStorage.getItem("vorma_admin_roles")));
+        console.log(JSON.parse(sessionStorage.getItem("vorma_admin_roles")));
         // Start:: Set Authed User Data
         this.setAuthenticatedUserData({
           id: res.data.data.user.id,
@@ -160,9 +160,22 @@ export default {
         this.$message.success(this.$t("VALIDATION.loginSuccess"));
         this.clearFormInputs();
         // Mark navigation before reload to prevent auto-logout
-        // markNavigation();
-        this.$router.replace("/home");
-        location.reload();
+        markNavigation();
+        // Set a flag in sessionStorage that persists through reload
+        sessionStorage.setItem("vorma_login_in_progress", "true");
+        
+        // Check if there's an intended route to redirect to after login
+        const intendedRoute = sessionStorage.getItem("vorma_intended_route");
+        const redirectPath = intendedRoute && intendedRoute !== "/" ? intendedRoute : "/home";
+        
+        // Clear the intended route from storage
+        sessionStorage.removeItem("vorma_intended_route");
+        
+        this.$router.replace(redirectPath);
+        // Small delay to ensure flags are set before reload
+        setTimeout(() => {
+          location.reload();
+        }, 50);
       } catch (error) {
         this.isWaitingRequest = false;
         this.$message.error(error.response.data.message);

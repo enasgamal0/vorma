@@ -6,7 +6,7 @@ export default {
   namespaced: true,
   state: {
     // START:: LANGUAGE DATA
-    vorma_admin_dashboard_language: localStorage.getItem(
+    vorma_admin_dashboard_language: sessionStorage.getItem(
       "vorma_admin_dashboard_language"
     ),
     // END:: LANGUAGE DATA

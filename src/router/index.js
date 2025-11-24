@@ -1,7 +1,7 @@
 // Start:: Importing Middleware
 import auth from "../middleware/auth.js";
 import Authentication from "../pages/Authentication.vue";
-// import { markNavigation } from "../plugins/autoLogout";
+import initAutoLogout, { markNavigation } from "../plugins/autoLogout";
 // End:: Importing Middleware
 
 // Start:: Importing Router Components
@@ -3213,11 +3213,14 @@ function nextFactory(context, middleware, index) {
 // Authentication and Permission Check Middleware
 router.beforeEach((to, from, next) => {
   // Mark navigation to prevent false logout on route changes
-  // markNavigation();
+  markNavigation();
   
-  const isAuthenticated = localStorage.getItem(
+  const isAuthenticated = sessionStorage.getItem(
     "vorma_admin_dashboard_user_token"
   );
+
+  // Re-initialize auto logout on route change (in case auth state changed)
+  initAutoLogout();
 
   if (to.meta.middleware) {
     const middleware = Array.isArray(to.meta.middleware)
@@ -3243,7 +3246,7 @@ router.beforeEach((to, from, next) => {
   if (to.meta.requiresPermission) {
     const { action, subject } = to.meta.requiresPermission;
     const storedPermissions = JSON.parse(
-      localStorage.getItem("vorma_admin_roles")
+      sessionStorage.getItem("vorma_admin_roles")
     )?.permissions;
 
     if (

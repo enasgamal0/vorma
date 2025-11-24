@@ -34,9 +34,14 @@ axios.interceptors.request.use(
       router.replace("/forbidden");
     }
     if (error.response.status === 401) {
-      localStorage.removeItem("vorma_admin_dashboard_user_id");
-      localStorage.removeItem("vorma_admin_dashboard_user_token");
-      localStorage.removeItem("vorma_admin_dashboard_userName");
+      // Store the intended destination before redirecting to login
+      const currentRoute = router.currentRoute?.fullPath;
+      if (currentRoute && currentRoute !== "/") {
+        sessionStorage.setItem("vorma_intended_route", currentRoute);
+      }
+      sessionStorage.removeItem("vorma_admin_dashboard_user_id");
+      sessionStorage.removeItem("vorma_admin_dashboard_user_token");
+      sessionStorage.removeItem("vorma_admin_dashboard_userName");
       router.replace("/");
     }
     return Promise.reject(error);
@@ -53,9 +58,14 @@ axios.interceptors.response.use(
       router.replace("/forbidden");
     }
     if (error.response.status === 401) {
-      localStorage.removeItem("vorma_admin_dashboard_user_id");
-      localStorage.removeItem("vorma_admin_dashboard_user_token");
-      localStorage.removeItem("vorma_admin_dashboard_userName");
+      // Store the intended destination before redirecting to login
+      const currentRoute = router.currentRoute?.fullPath;
+      if (currentRoute && currentRoute !== "/") {
+        sessionStorage.setItem("vorma_intended_route", currentRoute);
+      }
+      sessionStorage.removeItem("vorma_admin_dashboard_user_id");
+      sessionStorage.removeItem("vorma_admin_dashboard_user_token");
+      sessionStorage.removeItem("vorma_admin_dashboard_userName");
       router.replace("/");
     }
     return Promise.reject(error);
