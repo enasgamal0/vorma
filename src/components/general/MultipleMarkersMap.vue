@@ -9,6 +9,10 @@
       @click="onMapClick"
     >
 
+
+
+
+    
       <GmapMarker
         v-for="(marker, index) in markers"
         :key="index"
