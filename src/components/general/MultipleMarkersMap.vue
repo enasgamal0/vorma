@@ -1,6 +1,5 @@
 <template>
   <div class="map_wrapper">
-    <!-- <label v-if="placeName" class="place-label">{{ placeName }}</label> -->
     <GmapMap
       v-if="markers"
       :center="mapCenter"
@@ -9,6 +8,7 @@
       style="width: 100%; height: 400px"
       @click="onMapClick"
     >
+
       <GmapMarker
         v-for="(marker, index) in markers"
         :key="index"
