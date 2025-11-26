@@ -40,6 +40,11 @@
                   class="fas fa-calendar-check"
                 ></i>
 
+                <i
+                  v-else-if="key === 'online_users'"
+                  class="fas fa-user-check"
+                ></i>
+
               </div>
 
               <div class="info_box">
@@ -58,6 +63,8 @@
                 <span v-else-if="key === 'sessions'">{{
                   $t("PLACEHOLDERS.sessions_count")
                 }}</span>
+
+                <span v-else-if="key === 'online_users'">{{ $t("PLACEHOLDERS.activeUsersNow") }}</span>
                 <p class="number_box">{{ value }}</p>
               </div>
             </div>
@@ -65,7 +72,7 @@
         </div>
       </div>
       <!--  =========== End:: Data Table =========== -->
-      <coming-soon v-else/>
+      <!-- <coming-soon v-else/> -->
     </main>
     <!-- End:: Main Section -->
   </div>
@@ -100,6 +107,7 @@ export default {
           sport_places: res.data.data.sport_places,
           entertainment_places: res.data.data.entertainment_places,
           sessions: res.data.data.sessions,
+          online_users: res.data.data.online_users,
         };
       } catch (error) {
         this.loading = false;

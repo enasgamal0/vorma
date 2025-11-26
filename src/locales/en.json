@@ -1269,6 +1269,7 @@
   },
 
   "PLACEHOLDERS": {
+    "activeUsersNow": "Number of active users in the app now",
     "users_list": "List of Users that are in",
     "people_number": "Number of people in the place",
     "people_with_activity": "Number of people engaged in sports activity inside the place",
